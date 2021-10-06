@@ -66,7 +66,7 @@ class Material_model extends CI_Model
         $this->db->delete($this->table);
     }
 
-    function detect_availibilty_anggota_kd($kd_material)
+    function detect_availibilty_karyawan_kd($kd_material)
     {
         $this->db->where('kd_material', $kd_material);
         return $this->db->get($this->table)->num_rows();   

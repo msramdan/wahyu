@@ -12,7 +12,7 @@
                                         </div>
                                     </div>    
                                 <div class="box-body" style="overflow-x: scroll; ">
-        <table id="data-table-default" class="table table-bordered table-hover table-td-valign-middle text-white">
+        <table id="data-table-data" class="table table-bordered table-hover table-td-valign-middle text-white">
          <thead>
             <tr>
                 <th>No</th>
@@ -69,7 +69,7 @@
 
         $('#isitabel').css('display','block')
 
-        $('#data-table-default').DataTable({
+        $('#data-table-data').DataTable({
             responsive: true
         })
       })

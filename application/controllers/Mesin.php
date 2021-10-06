@@ -21,26 +21,36 @@ class Mesin extends CI_Controller
         $data = array(
             'mesin_data' => $mesin,
             'sett_apps' =>$this->Setting_app_model->get_by_id(1),
+            'classnyak' => $this
         );
-        $this->template->load('template','mesin/mesin_list', $data);
+        $this->template->load('template','mesin/mesin_wrapper', $data);
     }
 
-    public function read($id) 
+    public function list()
+    {
+        is_allowed($this->uri->segment(1),null);
+        $mesin = $this->Mesin_model->get_all();
+        $data = array(
+            'mesin_data' => $mesin,
+        );
+        $this->load->view('mesin/mesin_list', $data);
+    }
+
+    public function read() 
     {
         is_allowed($this->uri->segment(1),'read');
+        $id = $this->input->post('id');
         $row = $this->Mesin_model->get_by_id(decrypt_url($id));
         if ($row) {
             $data = array(
-                'sett_apps' =>$this->Setting_app_model->get_by_id(1),
-		'mesin_id' => $row->mesin_id,
-		'kd_mesin' => $row->kd_mesin,
-		'nama_mesin' => $row->nama_mesin,
-		'Keterangan' => $row->Keterangan,
-	    );
-            $this->template->load('template','mesin/mesin_read', $data);
+        		'mesin_id' => $row->mesin_id,
+        		'kd_mesin' => $row->kd_mesin,
+        		'nama_mesin' => $row->nama_mesin,
+        		'Keterangan' => $row->Keterangan,
+    	    );
+            $this->load->view('mesin/mesin_read', $data);
         } else {
-            $this->session->set_flashdata('error', 'Record Not Found');
-            redirect(site_url('mesin'));
+            echo 'not found';
         }
     }
 
@@ -49,91 +59,77 @@ class Mesin extends CI_Controller
         is_allowed($this->uri->segment(1),'create');
         $data = array(
             'button' => 'Create',
-            'sett_apps' =>$this->Setting_app_model->get_by_id(1),
-            'action' => site_url('mesin/create_action'),
-	    'mesin_id' => set_value('mesin_id'),
-	    'kd_mesin' => set_value('kd_mesin'),
-	    'nama_mesin' => set_value('nama_mesin'),
-	    'Keterangan' => set_value('Keterangan'),
-	);
-        $this->template->load('template','mesin/mesin_form', $data);
+            'action' => 'form_create_action',
+    	    'mesin_id' => set_value('mesin_id'),
+    	    'kd_mesin' => set_value('kd_mesin'),
+    	    'nama_mesin' => set_value('nama_mesin'),
+    	    'Keterangan' => set_value('Keterangan'),
+    	);
+        $this->load->view('mesin/mesin_form', $data);
     }
     
     public function create_action() 
     {
         is_allowed($this->uri->segment(1),'create');
-        $this->_rules();
 
-        if ($this->form_validation->run() == FALSE) {
-            $this->create();
-        } else {
-            $data = array(
-		'kd_mesin' => $this->input->post('kd_mesin',TRUE),
-		'nama_mesin' => $this->input->post('nama_mesin',TRUE),
-		'Keterangan' => $this->input->post('Keterangan',TRUE),
+        $data = array(
+    		'kd_mesin' => $this->input->post('kd_mesin',TRUE),
+    		'nama_mesin' => $this->input->post('nama_mesin',TRUE),
+    		'Keterangan' => $this->input->post('Keterangan',TRUE),
 	    );
 
-            $this->Mesin_model->insert($data);
-            $this->session->set_flashdata('message', 'Create Record Success');
-            redirect(site_url('mesin'));
-        }
+        $this->Mesin_model->insert($data);
+        $this->list();
     }
     
-    public function update($id) 
+    public function update() 
     {
         is_allowed($this->uri->segment(1),'update');
+        $id = $this->input->post('id');
         $row = $this->Mesin_model->get_by_id(decrypt_url($id));
 
         if ($row) {
             $data = array(
                 'button' => 'Update',
-                'sett_apps' =>$this->Setting_app_model->get_by_id(1),
-                'action' => site_url('mesin/update_action'),
-		'mesin_id' => set_value('mesin_id', $row->mesin_id),
-		'kd_mesin' => set_value('kd_mesin', $row->kd_mesin),
-		'nama_mesin' => set_value('nama_mesin', $row->nama_mesin),
-		'Keterangan' => set_value('Keterangan', $row->Keterangan),
-	    );
-            $this->template->load('template','mesin/mesin_form', $data);
+                'action' => 'form_update_action',
+        		'mesin_id' => $row->mesin_id,
+        		'kd_mesin' => set_value('kd_mesin', $row->kd_mesin),
+        		'nama_mesin' => set_value('nama_mesin', $row->nama_mesin),
+        		'Keterangan' => set_value('Keterangan', $row->Keterangan),
+    	    );
+            $this->load->view('mesin/mesin_form', $data);
         } else {
-            $this->session->set_flashdata('error', 'Record Not Found');
-            redirect(site_url('mesin'));
+            echo 'not found';
         }
     }
     
     public function update_action() 
     {
         is_allowed($this->uri->segment(1),'update');
-        $this->_rules();
-
-        if ($this->form_validation->run() == FALSE) {
-            $this->update($this->input->post('mesin_id', TRUE));
-        } else {
-            $data = array(
-		'kd_mesin' => $this->input->post('kd_mesin',TRUE),
-		'nama_mesin' => $this->input->post('nama_mesin',TRUE),
-		'Keterangan' => $this->input->post('Keterangan',TRUE),
+        
+        $data = array(
+    		'kd_mesin' => $this->input->post('kd_mesin',TRUE),
+    		'nama_mesin' => $this->input->post('nama_mesin',TRUE),
+    		'Keterangan' => $this->input->post('Keterangan',TRUE),
 	    );
 
-            $this->Mesin_model->update($this->input->post('mesin_id', TRUE), $data);
-            $this->session->set_flashdata('message', 'Update Record Success');
-            redirect(site_url('mesin'));
-        }
+        $this->Mesin_model->update($this->input->post('mesin_id', TRUE), $data);
+        $this->list();
+    
     }
     
-    public function delete($id) 
+    public function delete() 
     {
         is_allowed($this->uri->segment(1),'delete');
+        $id = $this->input->post('id');
         $row = $this->Mesin_model->get_by_id(decrypt_url($id));
 
         if ($row) {
             $this->Mesin_model->delete(decrypt_url($id));
-            $this->session->set_flashdata('message', 'Delete Record Success');
-            redirect(site_url('mesin'));
         } else {
-            $this->session->set_flashdata('error', 'Record Not Found');
-            redirect(site_url('mesin'));
+            echo 'not found';
         }
+        $this->list();
     }
 
     public function _rules() 
@@ -188,6 +184,29 @@ class Mesin extends CI_Controller
 
         xlsEOF();
         exit();
+    }
+
+    function detect_kd_mesin()
+    {
+        $kd_mesin = $this->input->post('kd_mesin');
+        $data = $this->Mesin_model->detect_availibilty_mesin_id($kd_mesin);
+        $arr = '';
+
+        if ($data > 0) {
+            $arr = array(
+                'class' => 'is-invalid',
+                'appendedelement' => '<div class="invalid-feedback">Kode sudah digunakan oleh mesin lain</div>',
+                'a' => 'none'
+            );
+        } else {
+            $arr = array(
+                'class' => 'is-valid',
+                'appendedelement' => '<div class="valid-feedback">Kode Bisa Digunakan</div>',
+                'a'=>'inline'
+            );
+        }
+
+        echo json_encode($arr);
     }
 
 }

@@ -60,6 +60,12 @@ class Mesin_model extends CI_Model
         $this->db->delete($this->table);
     }
 
+    function detect_availibilty_mesin_id($kd_mesin)
+    {
+        $this->db->where('kd_mesin', $kd_mesin);
+        return $this->db->get($this->table)->num_rows();
+    }
+
 }
 
 /* End of file Mesin_model.php */

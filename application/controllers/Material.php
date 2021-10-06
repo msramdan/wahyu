@@ -266,7 +266,7 @@ class Material extends CI_Controller
     function detect_kd_material()
     {
         $kd_material = $this->input->post('kd_material');
-        $data = $this->Material_model->detect_availibilty_anggota_kd($kd_material);
+        $data = $this->Material_model->detect_availibilty_karyawan_kd($kd_material);
         $arr = '';
 
         if ($data > 0) {
