@@ -10,6 +10,7 @@ class Karyawan extends CI_Controller
         parent::__construct();
         is_login();
         $this->load->model('Karyawan_model');
+        $this->load->model('Setting_app_model');
         $this->load->library('form_validation');
     }
 
@@ -18,27 +19,39 @@ class Karyawan extends CI_Controller
         is_allowed($this->uri->segment(1),null);
         $karyawan = $this->Karyawan_model->get_all();
         $data = array(
+            'sett_apps' => $this->Setting_app_model->get_by_id(1),
+            'classnyak' => $this,
             'karyawan_data' => $karyawan,
         );
-        $this->template->load('template','karyawan/karyawan_list', $data);
+        $this->template->load('template','karyawan/karyawan_wrapper', $data);
     }
 
-    public function read($id) 
+    public function list()
+    {
+        is_allowed($this->uri->segment(1),null);
+        $karyawan = $this->Karyawan_model->get_all();
+        $data = array(
+            'karyawan_data' => $karyawan,
+        );
+        $this->load->view('karyawan/karyawan_list', $data);
+    }
+
+    public function read() 
     {
         is_allowed($this->uri->segment(1),'read');
+        $id = $this->input->post('id');
         $row = $this->Karyawan_model->get_by_id(decrypt_url($id));
         if ($row) {
             $data = array(
-		'karyawan_id' => $row->karyawan_id,
-		'npk' => $row->npk,
-		'nama_karyawan' => $row->nama_karyawan,
-		'status_karyawan' => $row->status_karyawan,
-		'skill_level' => $row->skill_level,
-	    );
-            $this->template->load('template','karyawan/karyawan_read', $data);
+        		'karyawan_id' => $row->karyawan_id,
+        		'npk' => $row->npk,
+        		'nama_karyawan' => $row->nama_karyawan,
+        		'status_karyawan' => $row->status_karyawan,
+        		'skill_level' => $row->skill_level,
+	        );
+            $this->load->view('karyawan/karyawan_read', $data);
         } else {
-            $this->session->set_flashdata('error', 'Record Not Found');
-            redirect(site_url('karyawan'));
+            echo 'not found';
         }
     }
 
@@ -47,93 +60,81 @@ class Karyawan extends CI_Controller
         is_allowed($this->uri->segment(1),'create');
         $data = array(
             'button' => 'Create',
-            'action' => site_url('karyawan/create_action'),
-	    'karyawan_id' => set_value('karyawan_id'),
-	    'npk' => set_value('npk'),
-	    'nama_karyawan' => set_value('nama_karyawan'),
-	    'status_karyawan' => set_value('status_karyawan'),
-	    'skill_level' => set_value('skill_level'),
-	);
-        $this->template->load('template','karyawan/karyawan_form', $data);
+            'action' => 'form_create_action',
+    	    'karyawan_id' => set_value('karyawan_id'),
+    	    'npk' => set_value('npk'),
+    	    'nama_karyawan' => set_value('nama_karyawan'),
+    	    'status_karyawan' => set_value('status_karyawan'),
+    	    'skill_level' => set_value('skill_level',1),
+    	);
+        $this->load->view('karyawan/karyawan_form', $data);
     }
     
     public function create_action() 
     {
         is_allowed($this->uri->segment(1),'create');
-        $this->_rules();
 
-        if ($this->form_validation->run() == FALSE) {
-            $this->create();
-        } else {
-            $data = array(
-		'npk' => $this->input->post('npk',TRUE),
-		'nama_karyawan' => $this->input->post('nama_karyawan',TRUE),
-		'status_karyawan' => $this->input->post('status_karyawan',TRUE),
-		'skill_level' => $this->input->post('skill_level',TRUE),
+        $data = array(
+    		'npk' => $this->input->post('npk',TRUE),
+    		'nama_karyawan' => $this->input->post('nama_karyawan',TRUE),
+    		'status_karyawan' => $this->input->post('status_karyawan',TRUE),
+    		'skill_level' => $this->input->post('skill_level',TRUE),
 	    );
 
-            $this->Karyawan_model->insert($data);
-            $this->session->set_flashdata('message', 'Create Record Success');
-            redirect(site_url('karyawan'));
-        }
+        $this->Karyawan_model->insert($data);
+        $this->list();
     }
     
-    public function update($id) 
+    public function update() 
     {
         is_allowed($this->uri->segment(1),'update');
+        $id = $this->input->post('id');
         $row = $this->Karyawan_model->get_by_id(decrypt_url($id));
 
         if ($row) {
             $data = array(
                 'button' => 'Update',
-                'action' => site_url('karyawan/update_action'),
-		'karyawan_id' => set_value('karyawan_id', $row->karyawan_id),
-		'npk' => set_value('npk', $row->npk),
-		'nama_karyawan' => set_value('nama_karyawan', $row->nama_karyawan),
-		'status_karyawan' => set_value('status_karyawan', $row->status_karyawan),
-		'skill_level' => set_value('skill_level', $row->skill_level),
-	    );
-            $this->template->load('template','karyawan/karyawan_form', $data);
+                'action' => 'form_update_action',
+        		'karyawan_id' => $row->karyawan_id,
+        		'npk' => set_value('npk', $row->npk),
+        		'nama_karyawan' => set_value('nama_karyawan', $row->nama_karyawan),
+        		'status_karyawan' => set_value('status_karyawan', $row->status_karyawan),
+        		'skill_level' => set_value('skill_level', $row->skill_level),
+    	    );
+            $this->load->view('karyawan/karyawan_form', $data);
         } else {
-            $this->session->set_flashdata('error', 'Record Not Found');
-            redirect(site_url('karyawan'));
+            echo 'not found';
         }
     }
     
     public function update_action() 
     {
         is_allowed($this->uri->segment(1),'update');
-        $this->_rules();
 
-        if ($this->form_validation->run() == FALSE) {
-            $this->update($this->input->post('karyawan_id', TRUE));
-        } else {
-            $data = array(
-		'npk' => $this->input->post('npk',TRUE),
-		'nama_karyawan' => $this->input->post('nama_karyawan',TRUE),
-		'status_karyawan' => $this->input->post('status_karyawan',TRUE),
-		'skill_level' => $this->input->post('skill_level',TRUE),
+        $data = array(
+    		'npk' => $this->input->post('npk',TRUE),
+    		'nama_karyawan' => $this->input->post('nama_karyawan',TRUE),
+    		'status_karyawan' => $this->input->post('status_karyawan',TRUE),
+    		'skill_level' => $this->input->post('skill_level',TRUE),
 	    );
 
-            $this->Karyawan_model->update($this->input->post('karyawan_id', TRUE), $data);
-            $this->session->set_flashdata('message', 'Update Record Success');
-            redirect(site_url('karyawan'));
-        }
+        $this->Karyawan_model->update($this->input->post('karyawan_id', TRUE), $data);
+        $this->list();
     }
     
-    public function delete($id) 
+    public function delete() 
     {
         is_allowed($this->uri->segment(1),'delete');
+        $id = $this->input->post('id');
         $row = $this->Karyawan_model->get_by_id(decrypt_url($id));
 
         if ($row) {
             $this->Karyawan_model->delete(decrypt_url($id));
-            $this->session->set_flashdata('message', 'Delete Record Success');
-            redirect(site_url('karyawan'));
         } else {
-            $this->session->set_flashdata('error', 'Record Not Found');
-            redirect(site_url('karyawan'));
+            echo 'not found';
         }
+
+        $this->list();
     }
 
     public function _rules() 

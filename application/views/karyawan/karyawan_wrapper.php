@@ -1,8 +1,8 @@
 <div id="content" class="app-content">
-    <h1 class="page-header">KELOLA DATA MATERIAL</h1>  
+    <h1 class="page-header">KELOLA DATA karyawan</h1>  
     <div class="panel panel-inverse">
       <div class="panel-heading">
-        <h4 class="panel-title">material </h4>
+        <h4 class="panel-title">karyawan </h4>
             <div class="panel-heading-btn">
                 <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
                 <a href="javascript:;" class="btn btn-xs btn-icon btn-success btn-loading" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
@@ -56,7 +56,7 @@
                 $('.btn-loading').click()
                 $.ajax({
                     type: "GET",
-                    url: "<?php echo base_url() ?>Material/create",
+                    url: "<?php echo base_url() ?>karyawan/create",
                     success: function(data){
                         $('#panel-body').html(data);
                     },
@@ -75,7 +75,7 @@
                 $('.btn-loading').click()
                 $.ajax({
                     type: "GET",
-                    url: "<?php echo base_url() ?>Material/list",
+                    url: "<?php echo base_url() ?>karyawan/list",
                     success: function(data){
                         $('#panel-body').html(data);
                     },
@@ -95,7 +95,7 @@
                 $('.btn-loading').click()
                 $.ajax({
                     type: "POST",
-                    url: "<?php echo base_url() ?>Material/read",
+                    url: "<?php echo base_url() ?>karyawan/read",
                     data: {
                         id:id,
                     },
@@ -118,7 +118,7 @@
                 $('.btn-loading').click()
                 $.ajax({
                     type: "POST",
-                    url: "<?php echo base_url() ?>Material/update",
+                    url: "<?php echo base_url() ?>karyawan/update",
                     data: {
                         id:id,
                     },
@@ -150,7 +150,7 @@
                     $('.btn-loading').click()
                     $.ajax({
                         type: "POST",
-                        url: "<?php echo base_url() ?>Material/delete",
+                        url: "<?php echo base_url() ?>karyawan/delete",
                         data: {
                             id:id,
                         },
@@ -158,7 +158,7 @@
                             Swal.fire({
                               icon: 'success',
                               title: "Sukses",
-                              text: 'Data material berhasil dihapus'
+                              text: 'Data karyawan berhasil dihapus'
                             })
                             $('#panel-body').html(data);
                         },
@@ -193,13 +193,13 @@
                     dataString = $("#form_create_action").serialize();
                     $.ajax({
                         type: "POST",
-                        url: "<?php echo base_url() ?>Material/create_action",
+                        url: "<?php echo base_url() ?>karyawan/create_action",
                         data: dataString,
                         success: function(data){
                             Swal.fire({
                               icon: 'success',
                               title: "Sukses",
-                              text: 'Data material berhasil tercatat'
+                              text: 'Data karyawan berhasil tercatat'
                             })
                             $('#panel-body').html(data);
                         },
@@ -236,13 +236,13 @@
                     dataString = $("#form_update_action").serialize();
                     $.ajax({
                         type: "POST",
-                        url: "<?php echo base_url() ?>Material/update_action",
+                        url: "<?php echo base_url() ?>karyawan/update_action",
                         data: dataString,
                         success: function(data){
                             Swal.fire({
                               icon: 'success',
                               title: "Sukses",
-                              text: 'Data material berhasil diupdate'
+                              text: 'Data karyawan berhasil diupdate'
                             })
                             $('#panel-body').html(data);
                         },
