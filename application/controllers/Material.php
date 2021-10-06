@@ -78,7 +78,7 @@ class Material extends CI_Controller
     	    'id_jenis_material' => set_value('id_jenis_material'),
     	    'diametertebal' => set_value('diametertebal', 0),
             'panjang' => set_value('panjang', 0),
-            'lebar' => set_value('lebar', 0),
+            'lebar' => set_value('lebar'),
     	    'berat_per_pcs' => set_value('berat_per_pcs',0),
     	    'berat_total' => set_value('berat_total',0),
     	    'qty' => set_value('qty',0),

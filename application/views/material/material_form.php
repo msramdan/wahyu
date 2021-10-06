@@ -132,7 +132,7 @@
    $(".default-select2").select2();
 	$(document).ready(function() {
 		let timeoutID = null;
-		$('#kd_material').keyup(function(e){
+		$('#kd_material').on("input", function(e) {
 
 			const thisel = $(this)
 
@@ -179,7 +179,7 @@
 		let beratperpcs = $('#berat_per_pcs').val()
 		let totalberat = $('#berat_total').val()
 		let volume = $('#volume').val()
-		let masajenis = $('#masajenis').val()
+		let masajenis = $('#masa_jenis_material').val()
 		let diametertebal = $('#diametertebal').val()
 		let panjang = $('#panjang').val()
 		let lebar = $('#lebar').val()
@@ -205,27 +205,33 @@
 			$('#berat_total').val(totalberat.toFixed(2))
 		}
 
-		$('#qty').keyup(function() {
+		$('#qty').on("input", function() {
 			hitung_total_berat($(this).val())
 		})
 
-		$('#masa_jenis_material').keyup(function() {
+		$('#masa_jenis_material').on("input", function() {
 			hitung_berat_per_pcs($(this).val())
 		})
 
-		$('#diametertebal').keyup(function() {
+		$('#diametertebal').on("input", function() {
 			diametertebal = $(this).val()
 			hitung_volume(diametertebal,panjang,lebar)
+			hitung_berat_per_pcs($('#masa_jenis_material').val())
+			hitung_total_berat($('#qty').val())
 		})
 
-		$('#panjang').keyup(function() {
+		$('#panjang').on("input", function() {
 			panjang = $(this).val()
-			hitung_volume(diametertebal,panjang,lebar)	
+			hitung_volume(diametertebal,panjang,lebar)
+			hitung_berat_per_pcs($('#masa_jenis_material').val())
+			hitung_total_berat($('#qty').val())
 		})
 
-		$('#lebar').keyup(function() {
+		$('#lebar').on("input", function() {
 			lebar = $(this).val()
 			hitung_volume(diametertebal,panjang,lebar)
+			hitung_berat_per_pcs($('#masa_jenis_material').val())
+			hitung_total_berat($('#qty').val())
 		})
 
 	})
