@@ -21,6 +21,7 @@
 <link href="<?= base_url() ?>assets/assets/plugins/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" />
 <link href="<?= base_url() ?>assets/assets/plugins/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.min.css" rel="stylesheet" />
 <link href="<?= base_url() ?>assets/assets/plugins/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.min.css" rel="stylesheet" />
+<link href="<?= base_url() ?>assets/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
 <script src="<?= base_url() ?>assets/assets/ckeditor/ckeditor.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -38,7 +39,7 @@
   </script>
 
 </head>
-<body>
+<body style="overflow-x: hidden;">
 	 
 
 <div class="app-cover"></div>
@@ -316,12 +317,6 @@
 <script src="<?= base_url() ?>assets/assets/js/demo/dashboard-v2.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
 <script src="<?= base_url() ?>assets/assets/js/rocket-loader.min.js" data-cf-settings="beba54df5f87d24c2458d535-|49" defer=""></script>
 
-<script src="<?= base_url() ?>assets/assets/plugins/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="<?= base_url() ?>assets/assets/plugins/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
-<script src="<?= base_url() ?>assets/assets/plugins/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-<script src="<?= base_url() ?>assets/assets/plugins/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
-<script type="text/javascript" src="<?php echo base_url();?>assets/assets/js/sweetalert.min.js"></script>
-<script type="text/javascript" src="<?php echo base_url();?>assets/assets/js/sweetalert.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script> <!-- untuk sweet alret -->
 <script src="<?php echo base_url();?>assets/assets/js/dataflash.js"></script>
 <script src="<?= base_url() ?>assets/assets/js/number_format.js"></script>
@@ -333,13 +328,14 @@
 
 <script>
     //datatable
-  $('#data-table-default').DataTable({
-    responsive: true
-  });
+  // $('#data-table-default').DataTable({
+  //   responsive: true
+  // });
   $('#data-table-default2').DataTable({
     responsive: true
   });
   //ckeditor
   $('#wysihtml5').wysihtml5();
+
 </script>
 
