@@ -72,6 +72,12 @@ class Material_model extends CI_Model
         return $this->db->get($this->table)->num_rows();   
     }
 
+    function get_material_for($kd_produksi)
+    {
+        $this->db->where('kode_produksi', $kd_produksi);
+        return $this->db->get('detail_produksi')->result();
+    }
+
 }
 
 /* End of file Material_model.php */

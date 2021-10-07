@@ -64,7 +64,7 @@
 				if (val.length > 1) {
 					$.ajax({
 			            type : "POST",
-			            url  : "<?php echo base_url() ?>/mesin/detect_kd_mesin",
+			            url  : "<?php echo base_url() ?>mesin/detect_kd_mesin",
 			            data : {
 			                kd_mesin: val
 			            },
