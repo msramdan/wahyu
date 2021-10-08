@@ -13,9 +13,20 @@ class Dashboard extends CI_Controller {
 	public function index()
 	{
 		$data = array(
+			'classnyak' => $this,
             'sett_apps' =>$this->Setting_app_model->get_by_id(1),
         );
 		$this->template->load('template','dashboard',$data);
+	}
+
+	function showtotallogin($day)
+	{
+		return $this->db->query("SELECT COUNT(user_id) AS 'tl' FROM `history_login` WHERE day(tanggal) = ".$day.";")->row();
+	}
+
+	function showactivemachine()
+	{
+		return $this->db->query("SELECT COUNT(user_id) AS 'tl' FROM `history_login` WHERE day(tanggal) = ".$day.";")->row();
 	}
 
 

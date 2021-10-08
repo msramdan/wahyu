@@ -69,6 +69,7 @@ class Produksi extends CI_Controller
     	    'id' => set_value('id'),
     	    'tanggal_produksi' => set_value('tanggal_produksi',date('Y-m-d')),
     	    'total_barang_jadi' => set_value('total_barang_jadi'),
+            'rencana_selesai' => set_value('rencana_selesai',date('Y-m-d')),
     	    'material_needs' => null,
     	    'user_id' => set_value('user_id'),
         );
@@ -110,6 +111,9 @@ class Produksi extends CI_Controller
     		'tanggal_produksi' => $this->input->post('tanggal_produksi',TRUE).' '.date('h:m:s'),
     		'total_barang_jadi' => $this->input->post('total_barang_jadi',TRUE),
     		'priority' => 'HIGH',
+            'status' => 'READY',
+            'rencana_selesai' => $this->input->post('rencana_selesai',TRUE).' '.date('h:m:s'),
+            'aktual_selesai' => null,
     		'user_id' => $this->session->userdata('userid'),
 	    );
 
@@ -134,6 +138,7 @@ class Produksi extends CI_Controller
         		'total_barang_jadi' => set_value('total_barang_jadi', $row->total_barang_jadi),
                 'material' => $this->Material_model->get_all(),
                 'material_needs' => $this->Material_model->get_material_for($row->id),
+                'rencana_selesai' => set_value('rencana_selesai', date('Y-m-d',strtotime($row->rencana_selesai))),
                 'user_id' => set_value('user_id', $row->user_id),
 	        );
             $this->load->view('produksi/produksi_form', $data);
@@ -178,6 +183,7 @@ class Produksi extends CI_Controller
             'tanggal_produksi' => $this->input->post('tanggal_produksi',TRUE).' '.date('h:m:s'),
             'total_barang_jadi' => $this->input->post('total_barang_jadi',TRUE),
             'priority' => 'HIGH',
+            'rencana_selesai' => $this->input->post('rencana_selesai',TRUE).' '.date('h:m:s'),
             'user_id' => $this->session->userdata('userid'),
         );
 

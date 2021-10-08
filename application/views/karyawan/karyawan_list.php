@@ -32,8 +32,14 @@
         <td><?php echo $karyawan->skill_level ?></td>
         <td style="text-align:center" width="200px">
             <button type="button" class="btn btn-success btn-sm read_data" id="<?php echo encrypt_url($karyawan->karyawan_id) ?>"><i class="fas fa-eye" aria-hidden="true"></i></button>
-            <button type="button" class="btn btn-primary btn-sm update_data" id="<?php echo encrypt_url($karyawan->karyawan_id) ?>"><i class="fas fa-pencil-alt" aria-hidden="true"></i></button>
-            <button type="button" class="btn btn-danger btn-sm delete_data" id="<?php echo encrypt_url($karyawan->karyawan_id) ?>"><i class="fas fa-trash-alt" aria-hidden="true"></i></button>
+            <?php 
+            if ($classnyak->cekkaryawan($karyawan->karyawan_id) == 'safe') {
+                ?>
+                <button type="button" class="btn btn-primary btn-sm update_data" id="<?php echo encrypt_url($karyawan->karyawan_id) ?>"><i class="fas fa-pencil-alt" aria-hidden="true"></i></button>
+                <button type="button" class="btn btn-danger btn-sm delete_data" id="<?php echo encrypt_url($karyawan->karyawan_id) ?>"><i class="fas fa-trash-alt" aria-hidden="true"></i></button>
+                <?php
+            }
+            ?>
         </td>
     </tr>
             <?php } ?>

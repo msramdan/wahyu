@@ -10,6 +10,7 @@ class Karyawan extends CI_Controller
         parent::__construct();
         is_login();
         $this->load->model('Karyawan_model');
+        $this->load->model('Produksi_model');
         $this->load->model('Setting_app_model');
         $this->load->library('form_validation');
     }
@@ -32,6 +33,7 @@ class Karyawan extends CI_Controller
         $karyawan = $this->Karyawan_model->get_all();
         $data = array(
             'karyawan_data' => $karyawan,
+            'classnyak' => $this
         );
         $this->load->view('karyawan/karyawan_list', $data);
     }
@@ -192,6 +194,16 @@ class Karyawan extends CI_Controller
 
         xlsEOF();
         exit();
+    }
+
+    function cekkaryawan($karyawan_id)
+    {
+        $cek = $this->Produksi_model->cek_karyawan_bekerja($karyawan_id);
+        if ($cek > 0) {
+            return 'warning';
+        } else {
+            return 'safe';
+        }
     }
 
 }

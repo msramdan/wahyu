@@ -18,6 +18,7 @@
 <th>Kd Mesin</th>
 <th>Nama Mesin</th>
 <th>Keterangan</th>
+<th>Status</th>
 <th>Action</th>
     </tr></thead><tbody><?php $no = 1;
     foreach ($mesin_data as $mesin)
@@ -28,10 +29,30 @@
     <td><?php echo $mesin->kd_mesin ?></td>
     <td><?php echo $mesin->nama_mesin ?></td>
     <td><?php echo $mesin->Keterangan ?></td>
+    <td><?php 
+    if ($mesin->status == 'READY') {
+        ?>
+        <label class="badge bg-danger">TIDAK AKTIF</label>
+        <?php
+    } else {
+        ?>
+        <label class="badge bg-success">AKTIF</label>
+        <?php
+    }
+    ?></td>
+    
     <td style="text-align:center" width="200px">
                         <button type="button" class="btn btn-success btn-sm read_data" id="<?php echo encrypt_url($mesin->mesin_id) ?>"><i class="fas fa-eye" aria-hidden="true"></i></button>
-                        <button type="button" class="btn btn-primary btn-sm update_data" id="<?php echo encrypt_url($mesin->mesin_id) ?>"><i class="fas fa-pencil-alt" aria-hidden="true"></i></button>
-                        <button type="button" class="btn btn-danger btn-sm delete_data" id="<?php echo encrypt_url($mesin->mesin_id) ?>"><i class="fas fa-trash-alt" aria-hidden="true"></i></button>
+                        <?php
+
+                        if ($mesin->status == 'READY') {
+                            ?>
+                            <button type="button" class="btn btn-primary btn-sm update_data" id="<?php echo encrypt_url($mesin->mesin_id) ?>"><i class="fas fa-pencil-alt" aria-hidden="true"></i></button>
+                            <button type="button" class="btn btn-danger btn-sm delete_data" id="<?php echo encrypt_url($mesin->mesin_id) ?>"><i class="fas fa-trash-alt" aria-hidden="true"></i></button>
+                            <?php
+                        }
+
+                        ?>
     </td>
 </tr>
         <?php } ?>

@@ -16,8 +16,9 @@ class Produksi_model extends CI_Model
     }
 
     // get all
-    function get_all()
+    function get_all($status = '')
     {
+        $this->db->like('status',$status);
         $this->db->order_by($this->id, $this->order);
         $this->db->limit(100);
         return $this->db->get($this->table)->result();
@@ -87,6 +88,16 @@ class Produksi_model extends CI_Model
         }
         date_default_timezone_set('Asia/Jakarta');
         return 'P'.date('dmy').$kd;
+    }
+
+    function cek_karyawan_bekerja($karyawan_id)
+    {
+        $this->db->where('operator', $karyawan_id);
+        $this->db->group_start()
+            ->where('status', 'IN USE')
+            ->or_where('status', 'PAUSED')
+        ->group_end();
+        return $this->db->get('mesin')->num_rows();
     }
 
 }

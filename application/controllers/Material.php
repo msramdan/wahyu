@@ -285,8 +285,6 @@ class Material extends CI_Controller
 
         echo json_encode($arr);
     }
-
-
 }
 
 /* End of file Material.php */

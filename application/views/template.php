@@ -314,12 +314,36 @@
 <script src="<?= base_url() ?>assets/assets/plugins/jvectormap-next/jquery-jvectormap-world-mill.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
 <script src="<?= base_url() ?>assets/assets/plugins/bootstrap-calendar/js/bootstrap_calendar.min.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
 <!-- <script src="<?= base_url() ?>assets/assets/plugins/gritter/js/jquery.gritter.js" type="beba54df5f87d24c2458d535-text/javascript"></script> -->
+
+<script src="<?= base_url() ?>assets/assets/plugins/gritter/js/jquery.gritter.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.canvaswrapper.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.colorhelpers.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.flot.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.flot.saturated.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.flot.browser.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.flot.drawSeries.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.flot.uiConstants.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.flot.time.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.flot.resize.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.flot.pie.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.flot.crosshair.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.flot.categories.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.flot.navigate.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.flot.touchNavigate.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.flot.hover.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.flot.touch.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.flot.selection.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.flot.symbol.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.flot.legend.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/flot/source/jquery.flot.legend.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/plugins/jquery-sparkline/jquery.sparkline.min.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+
 <script src="<?= base_url() ?>assets/assets/plugins/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?= base_url() ?>assets/assets/plugins/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="<?= base_url() ?>assets/assets/plugins/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
 <script src="<?= base_url() ?>assets/assets/plugins/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
 
-<script src="<?= base_url() ?>assets/assets/js/demo/dashboard-v2.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
+<script src="<?= base_url() ?>assets/assets/js/demo/dashboard.js" type="beba54df5f87d24c2458d535-text/javascript"></script>
 <script src="<?= base_url() ?>assets/assets/js/rocket-loader.min.js" data-cf-settings="beba54df5f87d24c2458d535-|49" defer=""></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script> <!-- untuk sweet alret -->

@@ -29,6 +29,13 @@
 	</div>
 
 	<div class="row mb-15px">
+		<label class="form-label col-form-label col-md-3">Target Selesai</label>
+		<div class="col-md-9">
+			<input required type="date" class="form-control" name="rencana_selesai" id="rencana_selesai" placeholder="Tanggal Produksi" value="<?php echo $rencana_selesai; ?>" />
+		</div>
+	</div>
+
+	<div class="row mb-15px">
 		<label class="form-label col-form-label col-md-3">Total Barang Jadi <?php echo form_error('total_barang_jadi') ?></label>
 		<div class="col-md-4">
 			<div class="input-group" style="width: 150px;">
