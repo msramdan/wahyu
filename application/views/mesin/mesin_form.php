@@ -40,6 +40,24 @@
 		</div>
 	</div>
 
+	<div class="row mb-15px">
+		<label class="form-label col-form-label col-md-3">Jenis Mesin <?php echo form_error('jenis_mesin') ?></label>
+		<div class="col-md-9">
+			<select name="jenis_mesin" id="jenis_mesin" class="form-control">
+    			<?php
+
+    			$listjenismesin = ['PRODUCTION','FINISHING'];
+
+    			foreach ($listjenismesin as $value) {
+    				?>
+    					<option value="<?php echo $value ?>" <?php if($jenis_mesin == $value){echo 'selected';} ?>><?php echo $value ?></option>
+    				<?php
+    			}
+    			?>
+    		</select>
+		</div>
+	</div>
+
 	<input type="hidden" name="mesin_id" value="<?php echo $mesin_id; ?>" />
     <button type="submit" class="btn btn-danger"><i class="fas fa-save"></i> <?php echo $button ?></button> 
     <button type="button" class="btn btn-info list-data"><i class="fas fa-undo"></i> Kembali</button>

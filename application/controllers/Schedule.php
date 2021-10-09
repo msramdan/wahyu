@@ -16,8 +16,10 @@ class Schedule extends CI_Controller {
 
 	public function index()
 	{
+		$getallmachine = $this->Mesin_model->get_all();
 		$data = array(
 			'classnyak' => $this,
+            'machine_list' => $getallmachine,
             'sett_apps' =>$this->Setting_app_model->get_by_id(1),
         );
 		$this->template->load('template','schedule/schedule_wrapper',$data);
@@ -25,41 +27,52 @@ class Schedule extends CI_Controller {
 
 	function machine_list()
 	{
-		$getallmachine = $this->Mesin_model->get_all();
+		$getalloperator = $this->Karyawan_model->get_all();
+		$getallreadyproduksi = $this->Produksi_model->get_all_ready();
+		$getallreadyfinishingproduksi = $this->Produksi_model->get_all_ready_finishing();
+
+		$getallmachineproduction = $this->Mesin_model->get_all('PRODUCTION');
+		$getallmachinefinishing = $this->Mesin_model->get_all('FINISHING');
+
 		$data = array(
-            'machine_list' => $getallmachine,
-			'classnyak' => $this
+
+			'classnyak' => $this,
+			'getalloperator' => $getalloperator,
+			'getallreadyproduksi' => $getallreadyproduksi,
+			'getallreadyfinishingproduksi' => $getallreadyfinishingproduksi,
+			'machine_list_production' => $getallmachineproduction,
+            'machine_list_finishing' => $getallmachinefinishing
         );
-		$this->load->view('schedule/machine_lists',$data);
+		$this->load->view('schedule/machine_list',$data);
 	}
 
-	function show_machine($mesin_id)
+	function schedule_list()
 	{
-		$getalloperator = $this->Karyawan_model->get_all();
-		$getallproduksi = $this->Produksi_model->get_all('READY');
-		$datamesin = $this->Mesin_model->get_by_id($mesin_id);
-
 		$data = array(
-			'getalloperator' => $getalloperator,
-			'getallproduksi' => $getallproduksi,
-			'datamesin' => $datamesin
-		);
-		$this->load->view('schedule/machine_data',$data);
+			'classnyak' => $this,
+        );
+		$this->load->view('schedule/schedule_list',$data);
 	}
 
-	function show_machineJSON($mesin_id)
+	function machine_listJSON()
 	{
 		$getalloperator = $this->Karyawan_model->get_all();
-		$getallproduksi = $this->Produksi_model->get_all('READY');
-		$datamesin = $this->Mesin_model->get_by_id($mesin_id);
+		$getallreadyproduksi = $this->Produksi_model->get_all_ready();
+		$getallreadyfinishingproduksi = $this->Produksi_model->get_all_ready_finishing();
+
+		$getallmachineproduction = $this->Mesin_model->get_all('PRODUCTION');
+		$getallmachinefinishing = $this->Mesin_model->get_all('FINISHING');
 
 		$data = array(
+
+			'classnyak' => $this,
 			'getalloperator' => $getalloperator,
-			'getallproduksi' => $getallproduksi,
-			'datamesin' => $datamesin,
-			'classnyak' => $this
-		);
-		return $this->load->view('schedule/machine_data',$data, true);
+			'getallreadyproduksi' => $getallreadyproduksi,
+			'getallreadyfinishingproduksi' => $getallreadyfinishingproduksi,
+			'machine_list_production' => $getallmachineproduction,
+            'machine_list_finishing' => $getallmachinefinishing
+        );
+		return $this->load->view('schedule/machine_list',$data, true);
 	}
 
 	function update_machine()
@@ -69,6 +82,7 @@ class Schedule extends CI_Controller {
 		$kode_produksi = $this->input->post('kode_produksi');
 		// $status_mesin = $this->input->post('status_mesin');
 		$action = $this->input->post('action');
+		$jenis_mesin = $this->input->post('machine_type');
 
 		$arrayName = array(
 			'mesinid' => $id_mesin,
@@ -94,11 +108,20 @@ class Schedule extends CI_Controller {
 
 			$this->Mesin_model->update($id_mesin, $dataaa);
 
-			$dataproduksi = array(
-				'status' => 'ON GOING'
-			);
+			if ($jenis_mesin == 'PRODUCTION') {
+				$dataproduksi = array(
+					'status' => 'ON GOING'
+				);
 
-			$this->Produksi_model->update($kode_produksi,$dataproduksi);
+				$this->Produksi_model->update($kode_produksi,$dataproduksi);
+			}
+
+			if ($jenis_mesin == 'FINISHING') {
+				$dataproduksi = array(
+					'status' => 'FINISHING',
+				);
+				$this->Produksi_model->update($kode_produksi,$dataproduksi);
+			}
 		}
 
 		if ($action == 'pause') {
@@ -119,6 +142,21 @@ class Schedule extends CI_Controller {
 			$status = 'ok';
 			$msg = 'Mesin ditandai sebagai sedang tidak digunakan';
 
+			if ($jenis_mesin == 'PRODUCTION') {
+				$dataproduksi = array(
+					'status' => 'READY FINISHING',
+				);
+				$this->Produksi_model->update($kode_produksi,$dataproduksi);
+			}
+
+			if ($jenis_mesin == 'FINISHING') {
+				$dataproduksi = array(
+					'status' => 'DONE',
+					'aktual_selesai' => date('Y-m-d h:m:s')
+				);
+				$this->Produksi_model->update($kode_produksi,$dataproduksi);
+			}
+
 			$dataaa = array(
 				'operator' => 'N/A',
 				'kd_produksi' => 'N/A',
@@ -127,19 +165,13 @@ class Schedule extends CI_Controller {
 			);
 
 			$this->Mesin_model->update($id_mesin, $dataaa);
-
-			$dataproduksi = array(
-				'status' => 'DONE',
-				'aktual_selesai' => date('Y-m-d h:m:s')
-			);
-			$this->Produksi_model->update($kode_produksi,$dataproduksi);
 		}
 
 
 		$data = array(
 			'status' => $status,
 			'msg' => $msg,
-			'page' => $this->show_machineJSON($id_mesin)
+			'page' => $this->machine_listJSON()
 		);
 
 		echo json_encode($data);
@@ -148,5 +180,34 @@ class Schedule extends CI_Controller {
 	function getdataoperator($id)
 	{
 		return $this->Karyawan_model->get_by_id($id);
+	}
+	function get_production_ready_schedule()
+	{
+		$data = array(
+			'listofready' => $this->Produksi_model->get_production_ready()
+		); 
+		$this->load->view('schedule/produksi_ready',$data);
+	}
+	function get_production_ongoing_schedule()
+	{
+		$data = array(
+			'listofongoing' => $this->Produksi_model->get_production_ongoing(),
+			'classnyak' => $this
+		);
+		$this->load->view('schedule/produksi_ongoing',$data);
+	}
+
+	function get_production_done_schedule()
+	{
+		$data = array(
+			'listofdone' => $this->Produksi_model->get_production_done(date('d'))
+		);
+		$this->load->view('schedule/produksi_done',$data);
+	}
+
+	function cekkodeproduksipadamesin($kode_produksi)
+	{
+		$cek = $this->Mesin_model->get_operator_mesin($kode_produksi);
+		return $cek;
 	}
 }

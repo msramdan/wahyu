@@ -16,8 +16,9 @@ class Mesin_model extends CI_Model
     }
 
     // get all
-    function get_all()
+    function get_all($jenis_mesin = null)
     {
+        $this->db->like('jenis_mesin', $jenis_mesin);
         $this->db->order_by($this->id, $this->order);
         return $this->db->get($this->table)->result();
     }
@@ -26,6 +27,12 @@ class Mesin_model extends CI_Model
     function get_by_id($id)
     {
         $this->db->where($this->id, $id);
+        return $this->db->get($this->table)->row();
+    }
+
+    function get_operator_mesin($kode_produksi)
+    {
+        $this->db->where('kd_produksi', $kode_produksi);
         return $this->db->get($this->table)->row();
     }
     

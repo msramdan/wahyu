@@ -64,6 +64,7 @@ class Mesin extends CI_Controller
     	    'kd_mesin' => set_value('kd_mesin'),
     	    'nama_mesin' => set_value('nama_mesin'),
     	    'Keterangan' => set_value('Keterangan'),
+            'jenis_mesin' => set_value('jenis_mesin'),
     	);
         $this->load->view('mesin/mesin_form', $data);
     }
@@ -76,6 +77,7 @@ class Mesin extends CI_Controller
     		'kd_mesin' => $this->input->post('kd_mesin',TRUE),
     		'nama_mesin' => $this->input->post('nama_mesin',TRUE),
     		'Keterangan' => $this->input->post('Keterangan',TRUE),
+            'jenis_mesin' => $this->input->post('jenis_mesin',TRUE),
             'status' => 'READY',
             'operator' => 'N/A',
             'kd_produksi' => 'N/A',
@@ -100,6 +102,7 @@ class Mesin extends CI_Controller
         		'kd_mesin' => set_value('kd_mesin', $row->kd_mesin),
         		'nama_mesin' => set_value('nama_mesin', $row->nama_mesin),
         		'Keterangan' => set_value('Keterangan', $row->Keterangan),
+                'jenis_mesin' => set_value('jenis_mesin', $row->jenis_mesin),
     	    );
             $this->load->view('mesin/mesin_form', $data);
         } else {
@@ -115,6 +118,7 @@ class Mesin extends CI_Controller
     		'kd_mesin' => $this->input->post('kd_mesin',TRUE),
     		'nama_mesin' => $this->input->post('nama_mesin',TRUE),
     		'Keterangan' => $this->input->post('Keterangan',TRUE),
+            'jenis_mesin' => $this->input->post('jenis_mesin',TRUE)
 	    );
 
         $this->Mesin_model->update($this->input->post('mesin_id', TRUE), $data);
