@@ -11,6 +11,7 @@ class Produksi extends CI_Controller
         is_login();
         $this->load->model('Produksi_model');
         $this->load->model('Material_model');
+        $this->load->model('Mesin_model');
         $this->load->model('Setting_app_model');
         $this->load->library('form_validation');
     }
@@ -66,9 +67,10 @@ class Produksi extends CI_Controller
             'button' => 'Create',
             'action' => 'form_create_action',
             'material' => $this->Material_model->get_all(),
+            'machine_list' => $this->Mesin_model->get_all(),
     	    'id' => set_value('id'),
     	    'tanggal_produksi' => set_value('tanggal_produksi',date('Y-m-d')),
-    	    'total_barang_jadi' => set_value('total_barang_jadi'),
+    	    'total_barang_jadi' => set_value('total_barang_jadi',1),
             'rencana_selesai' => set_value('rencana_selesai',date('Y-m-d')),
     	    'material_needs' => null,
     	    'user_id' => set_value('user_id'),

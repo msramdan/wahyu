@@ -23,10 +23,10 @@
 
     <div class="col-xl-3 col-md-6">
         <div class="widget widget-stats bg-info">
-            <div class="stats-icon"><i class="fa fa-link"></i></div>
+            <div class="stats-icon"><i class="fa fa-tasks"></i></div>
             <div class="stats-info">
                 <h4>PRODUKSI AKTIF</h4>
-                <p>20.44%</p>
+                <p><?php echo $classnyak->showtotalactiveproduction() ?></p>
             </div>
             <div class="stats-link">
                 <a href="javascript:;">View Detail <i class="fa fa-arrow-alt-circle-right"></i></a>
@@ -37,10 +37,10 @@
 
     <div class="col-xl-3 col-md-6">
         <div class="widget widget-stats bg-orange">
-            <div class="stats-icon"><i class="fa fa-users"></i></div>
+            <div class="stats-icon"><i class="fa fa-cube"></i></div>
             <div class="stats-info">
                 <h4>MATERIAL TERSEDIA</h4>
-                <p>1,291,922</p>
+                <p><?php echo $classnyak->showtotalmaterial()->total ?></p>
             </div>
             <div class="stats-link">
                 <a href="javascript:;">View Detail <i class="fa fa-arrow-alt-circle-right"></i></a>
@@ -54,7 +54,7 @@
             <div class="stats-icon"><i class="fa fa-clock"></i></div>
             <div class="stats-info">
                 <h4>RE RATA PENYELESAIAN</h4>
-                <p>00:12:23</p>
+                <p>00:00:00:00</p>
             </div>
             <div class="stats-link">
                 <a href="javascript:;">View Detail <i class="fa fa-arrow-alt-circle-right"></i></a>
@@ -70,7 +70,7 @@
 
         <div class="panel panel-inverse" data-sortable-id="index-1">
             <div class="panel-heading">
-                <h4 class="panel-title">Website Analytics (Last 7 Days)</h4>
+                <h4 class="panel-title">Production Analytics (Last 7 Days)</h4>
                 <div class="panel-heading-btn">
                     <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
                     <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
@@ -395,7 +395,7 @@ Aliquam nec dolor vel nisl dictum ullamcorper. Duis vel magna enim. Aenean volut
 </thead>
 <tbody>
 <tr>
-<td nowrap><label class="badge bg-danger">Unique Visitor</label></td>
+<td nowrap><label class="badge bg-danger">New Production</label></td>
 <td>13,203 <span class="text-success"><i class="fa fa-arrow-up"></i></span></td>
 <td><div id="sparkline-unique-visitor"></div></td>
 </tr>
@@ -405,7 +405,7 @@ Aliquam nec dolor vel nisl dictum ullamcorper. Duis vel magna enim. Aenean volut
 <td><div id="sparkline-bounce-rate"></div></td>
 </tr>
 <tr>
-<td nowrap><label class="badge bg-success">Total Page Views</label></td>
+<td nowrap><label class="badge bg-success">Production Total/day</label></td>
 <td>1,230,030</td>
 <td><div id="sparkline-total-page-views"></div></td>
 </tr>
@@ -413,16 +413,6 @@ Aliquam nec dolor vel nisl dictum ullamcorper. Duis vel magna enim. Aenean volut
 <td nowrap><label class="badge bg-blue">Avg Time On Site</label></td>
 <td>00:03:45</td>
 <td><div id="sparkline-avg-time-on-site"></div></td>
-</tr>
-<tr>
-<td nowrap><label class="badge bg-default text-gray-900">% New Visits</label></td>
-<td>40.5%</td>
-<td><div id="sparkline-new-visits"></div></td>
-</tr>
-<tr>
-<td nowrap><label class="badge bg-inverse">Return Visitors</label></td>
-<td>73.4%</td>
-<td><div id="sparkline-return-visitors"></div></td>
 </tr>
 </tbody>
 </table>
