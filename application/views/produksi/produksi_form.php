@@ -35,21 +35,7 @@
 	<div class="row mb-15px">
 		<label class="form-label col-form-label col-md-3">Target Selesai</label>
 		<div class="col-md-9">
-			<input required type="date" class="form-control" name="rencana_selesai" id="rencana_selesai" placeholder="Tanggal Produksi" value="<?php echo $rencana_selesai; ?>" />
-		</div>
-	</div>
-
-	<div class="row mb-15px">
-		<label class="form-label col-form-label col-md-3">Machine Use</label>
-		<div class="col-md-9">
-			<div class="row">
-				<div class="col-4">
-					<div class="input-group">
-						<span class="input-group-text">Total Material</span>
-						<input type="number" readonly name="totalmaterial" class="form-control total-material" value="0">
-					</div>
-				</div>
-			</div>
+			<input required type="date" class="form-control" readonly name="rencana_selesai" id="rencana_selesai" placeholder="Tanggal Produksi" value="<?php echo $rencana_selesai; ?>" />
 		</div>
 	</div>
 
@@ -66,7 +52,7 @@
 			    </div>
 			    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordion">
 			      <div class="accordion-body bg-gray-800 text-white">
-			        <div class="row">
+			        <div class="row mb-15px">
 		        		<label class="form-label col-form-label col-3">Per-machine Material Treshold</label>
 			        	<div class="col-3">
 			        		<input type="number" name="tresholdmaterialspermachine" class="form-control tresholdmaterialspermachine" min="5" value="10" required="">
@@ -92,10 +78,12 @@
 					<tr>
 						<th>Machine Name</th>
 						<th>Used For</th>
-						<th>Estimated done time per-goods (in minute)</th>
-						<th>Material allocated</th>
-						<th>Goods Allocated</th>
-						<th>ETA</th>
+						<th>Throughput</th>
+						<th>Shift</th>
+						<th>Material Processed</th>
+						<th>Products</th>
+						<th>Time</th>
+						<th hidden="hidden">T. Minutes</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -106,10 +94,10 @@
 					if ($machine_list) {
 						foreach ($machine_list as $key => $value) {
 							?>
-							<tr class="available-machine">
+							<tr class="available-machine" id="<?php echo $value->mesin_id ?>">
 								<td>
 									<div class="form-check">
-										<input class="form-check-input checkboxmachine" type="checkbox" id="checkbox<?php echo $value->mesin_id ?>">
+										<input class="form-check-input checkboxmachine" name="machine_use[]" type="checkbox" id="checkbox<?php echo $value->mesin_id ?>" value="<?php echo $value->mesin_id ?>">
 										<label class="form-check-label" for="checkbox<?php echo $value->mesin_id ?>"><?php echo $value->kd_mesin.' ('.$value->jenis_mesin.')' ?></label>
 									</div>
 								</td>
@@ -118,22 +106,35 @@
 								</td>
 								<td>
 									<div class="input-group">
-										<input type="text" name="estimateddonepergoodsinminute" class="form-control estimateddonepergoodsinminute" value="0" min="0">
+										<input type="number" name="troughputperproduct[]" class="form-control troughputperproduct" value="0" min="0">
 										<span class="input-group-text">
-											Minute(s)
+											Minute(s)/Pd.
 										</span>
 									</div>
 								</td>
 								<td>
-									<input type="text" name="materialallocated" class="form-control materialallocated" value="0">
+									<div class="form-check form-check-inline">
+										<input class="form-check-input checkboxshiftformachine<?php echo $value->mesin_id ?>" name="shift1machine<?php echo $value->mesin_id ?>" type="checkbox" id="shift1machine<?php echo $value->mesin_id ?>" checked value="1" />
+										<label class="form-check-label" for="shift1machine<?php echo $value->mesin_id ?>">1</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input checkboxshiftformachine<?php echo $value->mesin_id ?>" name="shift2machine<?php echo $value->mesin_id ?>" type="checkbox" id="shift2machine<?php echo $value->mesin_id ?>" value="0"/>
+										<label class="form-check-label" for="shift2machine<?php echo $value->mesin_id ?>">2</label>
+									</div>
 								</td>
 								<td>
-									<input type="text" name="goodsallocated" class="form-control goodsallocated" value="0">
+									<input type="number" name="materialallocated[]" class="form-control materialallocated" value="0">
+								</td>
+								<td>
+									<input type="text" name="goodsallocated[]" readonly class="form-control-plaintext goodsallocated" value="0">
 								</td>
 								<td>
 									<div class="input-group">
-										<input type="text" name="timespentpermachine" class="form-control-plaintext">
+										<input type="text" name="timespentpermachine[]" class="form-control-plaintext" readonly>
 									</div>
+								</td>
+								<td hidden>
+									<input type="number" name="totalminutes" class="totalminutespermachine" value="0">
 								</td>
 
 							</tr>
@@ -142,10 +143,11 @@
 					}
 					?>
 					<tr>
-						<td colspan="3" style="text-align: center;"><b>Total</b></td>
-						<td><input type="text" name="totaldoneinminute" class="form-control-plaintext totaldoneinminute"></td>
+						<td colspan="4" style="text-align: right; font-size: 14px;"><b>Total</b></td>
 						<td><input type="text" name="totalmaterialused" class="form-control-plaintext totalmaterialused"></td>
+						<td><input type="text" name="totalproductions" class="form-control-plaintext totalproductions"></td>
 						<td><input type="text" name="predictiondone" class="form-control-plaintext predictiondone"></td>
+						<td hidden><input type="number" name="totalminuteseverymachine" class="totalminuteseverymachine" value="0"></td>
 					</tr>
 					
 				</tbody>
@@ -153,12 +155,8 @@
 	</div>
 
 	<div class="row m-15px">
-		<label class="form-label col-form-label col-md-3">Total Barang Jadi <?php echo form_error('total_barang_jadi') ?></label>
-		<div class="col-md-4">
-			<div class="input-group" style="width: 150px;">
-				<input type="number" min="1" class="form-control" name="total_barang_jadi" id="total_barang_jadi" placeholder="Total Barang Jadi" value="<?php echo $total_barang_jadi; ?>" required/>
-				<span class="input-group-text">Pcs</span>
-			</div>
+		<div class="col-md-3">
+			
 		</div>
 		<div class="col-md-5">
 			<input type="hidden" name="id" value="<?php echo $id; ?>" />
@@ -176,7 +174,7 @@
 			
 		</div>
 		<div class="row">
-			<div class="col-md-7">
+			<div class="col-md-6">
 				<table class="table table-bordered table-hover table-td-valign-middle tabel-material-ready-to-use">
 					<thead>
 						<tr>
@@ -210,7 +208,7 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="col-md-5">
+			<div class="col-md-6">
 				<table class="table table-hover table-sm tabel-material-yang-ada table-td-valign-middle">
 					<thead>
 						<tr>
@@ -276,6 +274,7 @@
 	</div>
 </form>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 
@@ -287,39 +286,115 @@
 			}
 		})
 
+		function sumthismachineETA(thisel) {
+
+	    	var getrow = thisel
+    		var idmesin = getrow.attr('id')
+	    	var minutesperproduction = getrow.find('td').eq(2).find('input').val()
+    		var productionpermachine = 0
+
+    		//tetapkan jam kerja
+    		var jamkerja = 0
+
+    		var jamkerjashift1 = 480 //menit
+    		var jamkerjashift2 = 420 //menit
+
+    		var checkboxshift1 = $('#shift1machine' + idmesin).val()
+    		var checkboxshift2 = $('#shift2machine' + idmesin).val()
+	    	//bagi 2 shift
+		    
+	    	if (checkboxshift1 == 1) {
+		    	jamkerja += jamkerjashift1
+		    }
+
+		    if (checkboxshift2 == 1) {
+		    	jamkerja += jamkerjashift2
+		    }
+	    	
+	    	productionpermachine = jamkerja/minutesperproduction
+			
+			console.log(productionpermachine)
+
+			if (productionpermachine == null || productionpermachine == Infinity ) {
+				productionpermachine = 0
+			}
+
+	    	getrow.find('td').eq(5).find('input').val(parseInt(productionpermachine))
+
+	    	var o = 0
+
+	    	if (productionpermachine > 0) {
+    			o = parseInt(minutesperproduction) * parseInt(productionpermachine)
+	    	} else {
+	    		o = parseInt(productionpermachine) * 1
+	    	}
+
+
+
+    		getrow.find('td').eq(7).find('input').val(o)
+
+    		var duration = moment.duration(o, 'minutes');
+
+			var timeString = duration.days() + ':' + duration.hours() + ':' + duration.minutes() + ':' + duration.seconds()
+	    	var eta = timeString
+	    	getrow.find('td').eq(6).find('input').val(eta)
+	    }
+
 		function sumETA() {
-	    	let arr = []
+	    	var arrminutes = []
+			var summinutes = 0;
+
+			var sumproduction = 0;
 
     		$('.available-machine.checked').each(function() {
-    			var gettime = $(this).find('td').eq(5).find('input').val()
-    			arr.push(gettime)
+    			var thisel = $(this)
+    			sumthismachineETA(thisel)
+    			//kumpulin menit dulu terus jumlah
+    			var getminutestotal = thisel.find('td').eq(7).find('input').val()
+
+    			if (!getminutestotal) {
+    				getminutestotal = 0
+    			}
+
+    			summinutes += parseInt(getminutestotal)
+    			arrminutes.push(getminutestotal)
+
+				//umpulin produksi yang dihasilan dulu, terus jumlah
+				var getproductiontotaal = thisel.find('td').eq(5).find('input').val()
+				sumproduction += parseInt(getproductiontotaal)
     		})
 
-    		console.log(arr)
+    		console.log(arrminutes)
 
-			let sum = "";
-			for (let i = 0; i < arr.length; i++) {
-			    if(i == 0){
-			        sum = arr[i];
-			        continue;
-			    }else{
-			        var a = sum.split(":");
-			        var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
-			        var b = arr[i].split(":");
-			        var seconds2 = (+b[0]) * 60 * 60 + (+b[1]) * 60 + (+b[2]);
-			        var date = new Date(1970,0,1);
-			        date.setSeconds(seconds + seconds2);
-			        sum = date.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1");
-			    }
+			//nyoba seting durasi ke 0 dah
+			var tot = moment.duration(0);
+
+			for (i = 0; i < arrminutes.length; i++) {                  
+				var durasimasingmasingmesin = arrminutes[i].toString();
+				tot.add(durasimasingmasingmesin, 'minutes');
 			}
-			console.log(sum);
-			$('.predictiondone').val(sum)
+
+			//set total durasi pengerjaan
+			$('.predictiondone').val(tot.days() + ':' + tot.hours() + ':' + tot.minutes() + ':' + tot.seconds())
+
+			//it really not useful at all but it may be lmao
+			$('.totalminuteseverymachine').val(summinutes)
+
+			var date = moment($('#tanggal_produksi').val(), 'YYYY-MM-DD');
+			date.add(summinutes, 'minutes');
+
+			//set rencana selesai
+			$('#rencana_selesai').val(moment(date).format('YYYY-MM-DD'))
+
+			//set total target barang jadi
+			$('.totalproductions').val(sumproduction)
+
 	    }
 
 		function checkAlokasiMelebihiTotalMaterial() {
 			var sum = 0
 	    	$('.materialallocated').each(function() {
-	    		sum += parseInt($(this).val())	
+	    		sum += parseInt($(this).val())
 	    	})
 
 	    	$('.alertnya').html('')
@@ -343,29 +418,29 @@
 		}
 
 		
-		function countTotalMaterial() {
-			let sum = 0
-			$('.qty-x-used').each(function() {
-				var getqty = parseInt($(this).parents('tr').find('td').eq(2).find('input').val())
-				var totalbarangjadi = parseInt($('#total_barang_jadi').val())
+		// {
+		// 	let sum = 0
+		// 	$('.qty-x-used').each(function() {
+		// 		var getqty = parseInt($(this).parents('tr').find('td').eq(2).find('input').val())
+		// 		var totalbarangjadi = parseInt($('#total_barang_jadi').val())
 
-				var nama_material = $(this).parents('tr').attr('id')
+		// 		var nama_material = $(this).parents('tr').attr('id')
 
-				var total = getqty * totalbarangjadi
+		// 		var total = getqty * totalbarangjadi
 
 
-				$(this).parents('tr').removeClass('oops')
+		// 		$(this).parents('tr').removeClass('oops')
 
-				$(this).val(total)
+		// 		$(this).val(total)
 				
-				if (parseInt($(this).val()) > parseInt($('.stock' + nama_material).val())) {
-					$(this).parents('tr').addClass('oops')
-				}
+		// 		if (parseInt($(this).val()) > parseInt($('.stock' + nama_material).val())) {
+		// 			$(this).parents('tr').addClass('oops')
+		// 		}
 				
-				sum += parseInt(total)
-			})
-			$('.total-material').val(parseInt(sum)).change()
-		}
+		// 		sum += parseInt(total)
+		// 	})
+		// 	$('.total-material').val(parseInt(sum)).change()
+		// }
 
 		function smartAllocate() {
 
@@ -373,66 +448,60 @@
 			var totalmaterial = parseInt($('.total-material').val())
 			var tresholdmaterialspermachine = 20 //tune here
 
-			if (smartallocate == 0) {
-				tresholdmaterialspermachine = parseInt($('.tresholdmaterialspermachine').val())
-			}
-
-			var availablemachine = $('.available-machine').length			
-
-			for (var i = 0; i < availablemachine; i++) {
-
-				var allocated = 0
-
-				if (totalmaterial <= tresholdmaterialspermachine) {
-					allocated = totalmaterial
-				}
-
-				if(totalmaterial > tresholdmaterialspermachine) {
-					for (var x = 0; x < tresholdmaterialspermachine; x++) {
-						allocated++
-					}
-				}
-
-				if(totalmaterial < 0) {
-					allocated = 0
-				}
-
-				totalmaterial-=tresholdmaterialspermachine
-				$('.available-machine').eq(i).find('td').eq(3).find('input').val(allocated)
-			}
-
 			//auto goods allocated
 			var totalgoods = parseInt($('#total_barang_jadi').val())
 			var tresholdgoodspermachine = 20 //tune here
 
 			if (smartallocate == 0) {
 				tresholdgoodspermachine = parseInt($('.tresholdgoodspermachine').val())
+				tresholdmaterialspermachine = parseInt($('.tresholdmaterialspermachine').val())
 			}
 
-			var availablemachine = $('.available-machine').length			
-
-			for (var i = 0; i < availablemachine; i++) {
-
+			$('.available-machine').each(function() {
 				var allocated = 0
+				var thisidmachine = $(this).attr('id')
 
-				if (totalgoods <= tresholdgoodspermachine) {
-					allocated = totalgoods
-				}
-
-				if(totalgoods > tresholdgoodspermachine) {
-					for (var x = 0; x < tresholdgoodspermachine; x++) {
-						allocated++
+				if(totalgoods <= 0) {
+					allocated = 0
+				} else {
+					$('#checkbox' + thisidmachine + '').prop("checked", true).parents('tr').addClass('checked')
+					if (totalgoods <= tresholdgoodspermachine) {
+						allocated = totalgoods
+					}
+					if(totalgoods > tresholdgoodspermachine) {
+						for (var x = 0; x < tresholdgoodspermachine; x++) {
+							allocated++
+						}
 					}
 				}
 
-				if(totalgoods < 0) {
+				totalgoods-=tresholdgoodspermachine
+				$(this).find('td').eq(4).find('input').val(allocated)
+			})
+
+			$('.available-machine').each(function() {
+				var allocated = 0
+
+				if(totalmaterial <= 0) {
 					allocated = 0
+				} else {
+					if (totalmaterial <= tresholdmaterialspermachine) {
+						allocated = totalmaterial
+					}
+
+					if(totalmaterial > tresholdmaterialspermachine) {
+						for (var x = 0; x < tresholdmaterialspermachine; x++) {
+							allocated++
+						}
+					}
 				}
 
-				totalgoods-=tresholdgoodspermachine
-				$('.available-machine').eq(i).find('td').eq(4).find('input').val(allocated)
-			}			
+				totalmaterial-=tresholdmaterialspermachine
+				$(this).find('td').eq(3).find('input').val(allocated)
+			})
 
+
+			sumETA()
 		}
 
 
@@ -445,9 +514,6 @@
 		}
 
 		let urutan = 1;
-		$('#total_barang_jadi').on('input',function() {
-			countTotalMaterial()
-		})
 
 	    $('.tabel-material-yang-ada').on('click','.btn-add-material', function() {
 	        const nama_material = $(this).attr('id')
@@ -480,7 +546,6 @@
                 })
 		    }
 		    checkdisablecreateproductionbutton()
-		    countTotalMaterial()
 	    });
 
 	    $('.tabel-material-ready-to-use').on('click','.btn-kurangi-material', function() {
@@ -498,7 +563,6 @@
 		        urutan--    	
 		    }
 		    checkdisablecreateproductionbutton()
-		    countTotalMaterial()
 	    })
 
 	    $('.tabel-material-ready-to-use').on('click','.btn-hapus-material', function() {
@@ -508,7 +572,6 @@
 
 			thisrow.remove()
 			checkdisablecreateproductionbutton()
-			countTotalMaterial()
 	    })
 
 	    $('#optionone').on('change', function() {
@@ -547,65 +610,23 @@
 	    	checkAlokasiMelebihiTotalMaterial()
 	    })
 
-	    $('.tabel-machine').on('input','.goodsallocated', function() {
+	    // $('.tabel-machine').on('input','.goodsallocated', function() {
 
+	    // 	var thisel = $(this)
+
+	    // 	if (thisel.parents('tr').hasClass('checked')) {
+		   //  	sumETA()
+	    // 	}
+
+	    // })
+
+	    $('.troughputperproduct').on('input', function() {
+	    	
 	    	var thisel = $(this)
 
-	    	var materialallocatedonthismachine = parseInt($(this).val())
-	    	var treshdldpermachine = parseInt($('.tresholdgoodspermachine').val())
-    		
-    		thisel.removeClass('is-invalid')
-	    	
-	    	if (materialallocatedonthismachine > treshdldpermachine) {
-	    		thisel.addClass('is-invalid')
+	    	if (thisel.parents('tr').hasClass('checked')) {
+	    		sumETA()
 	    	}
-
-	    	checkAlokasiMelebihiTotalGoods()
-
-	    	var getrow = $(this).parents('tr')
-
-	    	var thisinput = $(this).val()
-
-	    	if( $(this).val().length === 0 ) {
-		        thisinput = 0
-		    }
-
-	    	var minutes = getrow.find('td').eq(2).find('input').val()
-
-	    	if(minutes.length === 0 ) {
-		        minutes = 0
-		    }
-
-	    	var date = new Date(0)
-			date.setMinutes(parseInt(thisinput) * parseInt(minutes))
-			var timeString = date.toISOString().substr(11, 8)
-	    	var eta = timeString
-	    	getrow.find('td').eq(5).find('input').val(eta)
-
-	    	sumETA()
-	    })
-
-	    $('.estimateddonepergoodsinminute').on('input', function() {
-	    	var getrow = $(this).parents('tr')
-
-	    	var thisinput = $(this).val()
-
-	    	if($(this).val().length === 0 ) {
-		        thisinput = 0
-		    }
-
-	    	var howmuch = getrow.find('td').eq(4).find('input').val()
-	    	if(howmuch.length === 0 ) {
-		        howmuch = 0
-		    }
-
-	    	var date = new Date(0);
-			date.setMinutes(parseInt(thisinput) * parseInt(howmuch))
-			var timeString = date.toISOString().substr(11, 8)
-	    	var eta = timeString
-	    	getrow.find('td').eq(5).find('input').val(eta)
-
-	    	sumETA()
 	    })
 
 	    $('.checkboxmachine').on('change', function() {
@@ -615,7 +636,35 @@
 	    		$(this).parents('tr').removeClass('checked')
 	    	}
 
+	    	var thisel = $(this)
+			sumETA()
+	    })
+
+	    $('#tanggal_produksi').on('change', function() {
 	    	sumETA()
 	    })
+
+	    <?php 
+
+	    if ($machine_list) {
+			foreach ($machine_list as $key => $value) {
+				?>
+
+				$('.checkboxshiftformachine<?php echo $value->mesin_id ?>').on('change', function() {
+					var thisel = $(this)
+
+					if (this.checked) {
+						thisel.val(1)
+					} else {
+						thisel.val(0)
+					}
+					sumETA()
+				})
+
+				<?php
+			}
+		}
+
+	    ?>
 	})
 </script>

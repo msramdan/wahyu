@@ -49,10 +49,13 @@ class Produksi extends CI_Controller
             $data = array(
         		'id' => $row->id,
         		'tanggal_produksi' => $row->tanggal_produksi,
+                'rencana_selesai' => $row->rencana_selesai,
         		'total_barang_jadi' => $row->total_barang_jadi,
         		'priority' => $row->priority,
                 'materialsdata' => $this->Material_model->get_material_for($row->id),
+                'machine_used' => $row->machine_use,
         		'user_id' => $row->user_id,
+                'classnyak' => $this,
     	    );
             $this->load->view('produksi/produksi_read', $data);
         } else {
@@ -97,7 +100,6 @@ class Produksi extends CI_Controller
                 'jumlah_bahan' => $stok_dibutuhkan[$i]
             );
             $this->Produksi_model->insert_detailproduksi($readytouse);
-            // print_r($arr);
         }
 
         for ($x=0; $x < count($id_material_stock); $x++) { 
@@ -108,6 +110,34 @@ class Produksi extends CI_Controller
             $this->Material_model->update($id_material_stock[$x], $datastok);
         }
 
+        $machine_used = $this->input->post('machine_use');
+        $estimateddonepergoodsinminute = $this->input->post('estimateddonepergoodsinminute');
+        $materialallocated = $this->input->post('materialallocated');
+        $goodsallocated = $this->input->post('goodsallocated');
+        $etapermachine = $this->input->post('timespentpermachine');
+
+
+        $arraydetail = [];
+
+        if (count($machine_used) > 0) {
+            for ($i=0; $i < count($machine_used); $i++) {
+
+                $shift1machine = $this->input->post('shift1machine'.$machine_used[$i]);
+                $shift2machine = $this->input->post('shift2machine'.$machine_used[$i]);
+
+                $arraydetail[] = array(
+                    'machine_id' => $machine_used[$i],
+                    'estimateddonepergoods' => $estimateddonepergoodsinminute[$i],
+                    'materialallocated' => $materialallocated[$i],
+                    'goodsallocated' => $goodsallocated[$i],
+                    'shift1' => $shift1machine,
+                    'shift2' => $shift2machine,
+                    'etapermachine' => $etapermachine[$i],
+                );
+            }
+        }
+
+        
         $data = array(
     		'id' => $kode,
     		'tanggal_produksi' => $this->input->post('tanggal_produksi',TRUE).' '.date('h:m:s'),
@@ -116,80 +146,11 @@ class Produksi extends CI_Controller
             'status' => 'READY',
             'rencana_selesai' => $this->input->post('rencana_selesai',TRUE).' '.date('h:m:s'),
             'aktual_selesai' => null,
+            'machine_use' => json_encode($arraydetail, true),
     		'user_id' => $this->session->userdata('userid'),
 	    );
 
         $this->Produksi_model->insert($data);
-        $this->list();
-    }
-    
-    public function update() 
-    {
-        is_allowed($this->uri->segment(1),'update');
-
-        $id = $this->input->post('id');
-
-        $row = $this->Produksi_model->get_by_id(decrypt_url($id));
-
-        if ($row) {
-            $data = array(
-                'button' => 'Update',
-                'action' => 'form_update_action',
-        		'id' => $row->id,
-        		'tanggal_produksi' => set_value('tanggal_produksi', date('Y-m-d',strtotime($row->tanggal_produksi))),
-        		'total_barang_jadi' => set_value('total_barang_jadi', $row->total_barang_jadi),
-                'material' => $this->Material_model->get_all(),
-                'material_needs' => $this->Material_model->get_material_for($row->id),
-                'rencana_selesai' => set_value('rencana_selesai', date('Y-m-d',strtotime($row->rencana_selesai))),
-                'user_id' => set_value('user_id', $row->user_id),
-	        );
-            $this->load->view('produksi/produksi_form', $data);
-        } else {
-            echo 'not found';
-        }
-    }
-    
-    public function update_action() 
-    {
-        is_allowed($this->uri->segment(1),'update');
-
-        $idproduksi = $this->input->post('id', TRUE);
-
-        $material_dibutuhkan = $this->input->post('material_dibutuhkan');
-        $stok_dibutuhkan = $this->input->post('stok_dibutuhkan');
-
-        $id_material_stock = $this->input->post('id_material_in_stock');
-        $qty_material_stock = $this->input->post('qty_material_in_stock');
-
-        $this->Produksi_model->delete_detailproduksi($idproduksi);
-
-        for ($i = 0; $i < count($material_dibutuhkan); $i++) { 
-
-            $readytouse = array(
-                'kode_produksi' => $idproduksi,
-                'kd_material' => $material_dibutuhkan[$i],
-                'jumlah_bahan' => $stok_dibutuhkan[$i]
-            );
-            $this->Produksi_model->insert_detailproduksi($readytouse);
-        }
-
-        for ($x=0; $x < count($id_material_stock); $x++) { 
-            $datastok = array(
-                'qty' => $qty_material_stock[$x]
-            );
-
-            $this->Material_model->update($id_material_stock[$x], $datastok);
-        }
-
-        $data = array(
-            'tanggal_produksi' => $this->input->post('tanggal_produksi',TRUE).' '.date('h:m:s'),
-            'total_barang_jadi' => $this->input->post('total_barang_jadi',TRUE),
-            'priority' => 'HIGH',
-            'rencana_selesai' => $this->input->post('rencana_selesai',TRUE).' '.date('h:m:s'),
-            'user_id' => $this->session->userdata('userid'),
-        );
-
-        $this->Produksi_model->update($idproduksi, $data);
         $this->list();
     }
     
@@ -209,18 +170,6 @@ class Produksi extends CI_Controller
         }
 
         $this->list();
-    }
-
-    public function _rules() 
-    {
-	$this->form_validation->set_rules('id', 'id', 'trim|required');
-	$this->form_validation->set_rules('tanggal_produksi', 'tanggal produksi', 'trim|required');
-	$this->form_validation->set_rules('total_barang_jadi', 'total barang jadi', 'trim|required');
-	$this->form_validation->set_rules('priority', 'id detail material', 'trim|required');
-	$this->form_validation->set_rules('user_id', 'user id', 'trim|required');
-
-	$this->form_validation->set_rules('', '', 'trim');
-	$this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
     }
 
     public function excel()
@@ -269,6 +218,12 @@ class Produksi extends CI_Controller
 
         xlsEOF();
         exit();
+    }
+
+    function getmachinedetail($id)
+    {
+        $data = $this->Mesin_model->get_by_id($id);
+        return $data;
     }
 
 }

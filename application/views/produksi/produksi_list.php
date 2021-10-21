@@ -40,7 +40,6 @@
                     <?php
                     if ($produksi->status == 'READY') {
                         ?>
-                        <button type="button" class="btn btn-primary btn-sm update_data" id="<?php echo encrypt_url($produksi->id) ?>"><i class="fas fa-pencil-alt" aria-hidden="true"></i></button>
                         <button type="button" class="btn btn-danger btn-sm delete_data" id="<?php echo encrypt_url($produksi->id) ?>"><i class="fas fa-trash-alt" aria-hidden="true"></i></button>
                         <?php
                     }

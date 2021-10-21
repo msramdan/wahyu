@@ -19,7 +19,7 @@ class Mesin_model extends CI_Model
     function get_all($jenis_mesin = null)
     {
         $this->db->like('jenis_mesin', $jenis_mesin);
-        $this->db->order_by($this->id, $this->order);
+        $this->db->order_by($this->id, 'ASC');
         return $this->db->get($this->table)->result();
     }
 

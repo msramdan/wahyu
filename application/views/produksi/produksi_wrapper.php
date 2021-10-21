@@ -120,31 +120,7 @@
                     }
                 });
             })
-
-            $(document).on('click','.update_data', function() {
-
-                const id = $(this).attr('id')
-                $('.btn-loading').click()
-                $.ajax({
-                    type: "POST",
-                    url: "<?php echo base_url() ?>produksi/update",
-                    data: {
-                        id:id,
-                    },
-                    success: function(data){
-                        $('#panel-body').html(data);
-                        changewindowtitle('Edit Data Produksi')
-                    },
-                    error: function(error) {
-                        Swal.fire({
-                          icon: 'error',
-                          title: "Oops!",
-                          text: 'Tidak dapat tersambung dengan server, pastikan koneksi anda aktif, jika masih terjadi hubungi admin IT'
-                        })
-                    }
-                });
-            })
-
+            
             $(document).on('click','.delete_data', function() {
                 Swal.fire({
                   title: 'Yakin dihapus?',
@@ -211,50 +187,6 @@
                               icon: 'success',
                               title: "Sukses",
                               text: 'Data produksi berhasil tercatat'
-                            })
-                            changewindowtitle('List Produksi')
-                            $('#panel-body').html(data);
-                        },
-                        error: function(error) {
-                            Swal.fire({
-                              icon: 'error',
-                              title: "Oops!",
-                              text: 'Tidak dapat tersambung dengan server, pastikan koneksi anda aktif, jika masih terjadi hubungi admin IT'
-                            })
-                        }
-                    });
-
-                  }
-                })
-
-            })
-
-            $(document).on('submit','#form_update_action', function(e) {
-
-                e.preventDefault()
-                
-                if ($(this).valid) return false;
-
-                Swal.fire({
-                  title: 'Konfirmasi Tindakan',
-                  text: "Yakin diupdate?",
-                  icon: 'warning',
-                  showCancelButton: true,
-                  confirmButtonColor: '#3085d6',
-                  cancelButtonColor: '#d33',
-                  confirmButtonText: 'Yes'
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    dataString = $("#form_update_action").serialize();
-                    $.ajax({
-                        type: "POST",
-                        url: "<?php echo base_url() ?>produksi/update_action",
-                        data: dataString,
-                        success: function(data){
-                            Swal.fire({
-                              icon: 'success',
-                              title: "Sukses",
-                              text: 'Data produksi berhasil diupdate'
                             })
                             changewindowtitle('List Produksi')
                             $('#panel-body').html(data);
