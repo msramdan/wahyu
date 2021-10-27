@@ -2,6 +2,7 @@
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
+date_default_timezone_set('Asia/Jakarta');
 
 class Produksi_model extends CI_Model
 {
@@ -37,6 +38,12 @@ class Produksi_model extends CI_Model
         $this->db->order_by($this->id, $this->order);
         $this->db->limit(100);
         return $this->db->get($this->table)->result();
+    }
+
+    function get_all_schedule()
+    {
+        $year = date('Y');
+        return $this->db->query("SELECT * FROM `produksi` WHERE date(tanggal_produksi) >= '01-01-".$year." 00:00:00'; ")->result();
     }
 
     // get data by id
@@ -90,8 +97,8 @@ class Produksi_model extends CI_Model
         $this->db->delete('detail_produksi');   
     }
 
-    function buat_kode(){
-        $q = $this->db->query("SELECT MAX(RIGHT(id,4)) AS kd_max FROM produksi WHERE DATE(tanggal_produksi)=CURDATE()");
+    function buat_kode($tanggal_produksi){
+        $q = $this->db->query("SELECT MAX(RIGHT(id,4)) AS kd_max FROM produksi WHERE DATE(created_at)='".$tanggal_produksi."'");
         $kd = "";
         if($q->num_rows()>0){
             foreach($q->result() as $k){
@@ -141,6 +148,13 @@ class Produksi_model extends CI_Model
             WHERE produksi.status = 'DONE' AND day(produksi.aktual_selesai) = ".$tanggal."
             ORDER BY aktual_selesai ASC
             LIMIT 10;
+            ")->result();
+    }
+
+    function deteksi_pengunaan_mesin_pada_tanggal($date_start, $date_end)
+    {
+        return $this->db->query("
+            SELECT * FROM `produksi` WHERE tanggal_produksi <= '".$date_end."' AND rencana_selesai >= '".$date_start."'; 
             ")->result();
     }
 

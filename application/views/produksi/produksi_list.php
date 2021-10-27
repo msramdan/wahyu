@@ -31,7 +31,27 @@
             <td><?php echo $produksi->id ?></td>
             <td><?php echo $produksi->tanggal_produksi ?></td>
             <td><?php echo $produksi->total_barang_jadi ?></td>
-            <td><?php echo $produksi->priority ?></td>
+            <td><?php
+
+            $op = $produksi->priority;
+
+            if ($op == 0) {
+                ?>
+                <label class="badge bg-success">Biasa</label>
+                <?php
+            }
+
+            if ($op == 1) {
+                ?>
+                <label class="badge bg-warning">Urgent</label>
+                <?php
+            }
+
+            if ($op == 2) {
+                ?>
+                <label class="badge bg-danger">Top Urgent</label>
+                <?php
+            }?></td>
             <td><?php echo $produksi->status ?></td>
             <td><?php echo $produksi->user_id ?></td>
             <td style="text-align:center" width="200px">

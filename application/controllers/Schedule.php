@@ -25,189 +25,88 @@ class Schedule extends CI_Controller {
 		$this->template->load('template','schedule/schedule_wrapper',$data);
 	}
 
-	function machine_list()
+	function getallschedule()
 	{
-		$getalloperator = $this->Karyawan_model->get_all();
-		$getallreadyproduksi = $this->Produksi_model->get_all_ready();
-		$getallreadyfinishingproduksi = $this->Produksi_model->get_all_ready_finishing();
+		$stringobject = '';
+		$getall = $this->Produksi_model->get_all_schedule();
+		foreach ($getall as $key => $value) {
+			
+			$tanggal_produksi = new DateTime($value->tanggal_produksi);
+			$rencana_selesai = new DateTime($value->rencana_selesai);
 
-		$getallmachineproduction = $this->Mesin_model->get_all('PRODUCTION');
-		$getallmachinefinishing = $this->Mesin_model->get_all('FINISHING');
+			$color = '';
 
-		$data = array(
-
-			'classnyak' => $this,
-			'getalloperator' => $getalloperator,
-			'getallreadyproduksi' => $getallreadyproduksi,
-			'getallreadyfinishingproduksi' => $getallreadyfinishingproduksi,
-			'machine_list_production' => $getallmachineproduction,
-            'machine_list_finishing' => $getallmachinefinishing
-        );
-		$this->load->view('schedule/machine_list',$data);
-	}
-
-	function schedule_list()
-	{
-		$data = array(
-			'classnyak' => $this,
-        );
-		$this->load->view('schedule/schedule_list',$data);
-	}
-
-	function machine_listJSON()
-	{
-		$getalloperator = $this->Karyawan_model->get_all();
-		$getallreadyproduksi = $this->Produksi_model->get_all_ready();
-		$getallreadyfinishingproduksi = $this->Produksi_model->get_all_ready_finishing();
-
-		$getallmachineproduction = $this->Mesin_model->get_all('PRODUCTION');
-		$getallmachinefinishing = $this->Mesin_model->get_all('FINISHING');
-
-		$data = array(
-
-			'classnyak' => $this,
-			'getalloperator' => $getalloperator,
-			'getallreadyproduksi' => $getallreadyproduksi,
-			'getallreadyfinishingproduksi' => $getallreadyfinishingproduksi,
-			'machine_list_production' => $getallmachineproduction,
-            'machine_list_finishing' => $getallmachinefinishing
-        );
-		return $this->load->view('schedule/machine_list',$data, true);
-	}
-
-	function update_machine()
-	{
-		$id_mesin = $this->input->post('id_mesin');
-		$operator = $this->input->post('operator_name');
-		$kode_produksi = $this->input->post('kode_produksi');
-		// $status_mesin = $this->input->post('status_mesin');
-		$action = $this->input->post('action');
-		$jenis_mesin = $this->input->post('machine_type');
-
-		$arrayName = array(
-			'mesinid' => $id_mesin,
-			'operator' => $operator,
-			'kd_produksi' => $kode_produksi,
-			// 'statusmesin' => $status_mesin,
-			'action' => $action
-		);
-
-		$status = '';
-		$msg = '';
-
-		if ($action == 'activate') {
-			$status = 'ok';
-			$msg = 'Mesin ditandai sebagai sedang digunakan';
-
-			$dataaa = array(
-				'operator' => $operator,
-				'kd_produksi' => $kode_produksi,
-				'status' => 'IN USE',
-				'tindakan_terakhir' => date('Y-m-d h:m:s')
-			);
-
-			$this->Mesin_model->update($id_mesin, $dataaa);
-
-			if ($jenis_mesin == 'PRODUCTION') {
-				$dataproduksi = array(
-					'status' => 'ON GOING'
-				);
-
-				$this->Produksi_model->update($kode_produksi,$dataproduksi);
+			if ($value->priority == 0) {
+				$color = '#04c142';
 			}
 
-			if ($jenis_mesin == 'FINISHING') {
-				$dataproduksi = array(
-					'status' => 'FINISHING',
-				);
-				$this->Produksi_model->update($kode_produksi,$dataproduksi);
+			if ($value->priority == 1) {
+				$color = '#ff7b01';
 			}
+
+			if ($value->priority == 2) {
+				$color = '#ff3502';
+			}
+
+			$dick = 'DEEEEEEEECK!';
+
+			$stringobject.=
+				'{
+					title: "'. $value->id.'",
+					start: "'. $tanggal_produksi->format(DateTime::ATOM).'",
+					end: "'. $rencana_selesai->format(DateTime::ATOM).'",
+					color: "' .$color.'"
+				},';
 		}
 
-		if ($action == 'pause') {
-			$status = 'ok';
-			$msg = 'Mesin ditandai sebagai ditahan penggunaannya';
-
-			$dataaa = array(
-				'operator' => $operator,
-				'kd_produksi' => $kode_produksi,
-				'status' => 'PAUSED',
-				'tindakan_terakhir' => date('Y-m-d h:m:s')
-			);
-
-			$this->Mesin_model->update($id_mesin, $dataaa);
-		}
-
-		if($action == 'stop') {
-			$status = 'ok';
-			$msg = 'Mesin ditandai sebagai sedang tidak digunakan';
-
-			if ($jenis_mesin == 'PRODUCTION') {
-				$dataproduksi = array(
-					'status' => 'READY FINISHING',
-				);
-				$this->Produksi_model->update($kode_produksi,$dataproduksi);
-			}
-
-			if ($jenis_mesin == 'FINISHING') {
-				$dataproduksi = array(
-					'status' => 'DONE',
-					'aktual_selesai' => date('Y-m-d h:m:s')
-				);
-				$this->Produksi_model->update($kode_produksi,$dataproduksi);
-			}
-
-			$dataaa = array(
-				'operator' => 'N/A',
-				'kd_produksi' => 'N/A',
-				'status' => 'READY',
-				'tindakan_terakhir' => date('Y-m-d h:m:s')
-			);
-
-			$this->Mesin_model->update($id_mesin, $dataaa);
-		}
-
-
-		$data = array(
-			'status' => $status,
-			'msg' => $msg,
-			'page' => $this->machine_listJSON()
-		);
-
-		echo json_encode($data);
+		echo $stringobject;
 	}
 
 	function getdataoperator($id)
 	{
 		return $this->Karyawan_model->get_by_id($id);
 	}
-	function get_production_ready_schedule()
-	{
-		$data = array(
-			'listofready' => $this->Produksi_model->get_production_ready()
-		); 
-		$this->load->view('schedule/produksi_ready',$data);
-	}
-	function get_production_ongoing_schedule()
-	{
-		$data = array(
-			'listofongoing' => $this->Produksi_model->get_production_ongoing(),
-			'classnyak' => $this
-		);
-		$this->load->view('schedule/produksi_ongoing',$data);
-	}
 
-	function get_production_done_schedule()
+	function getdetailschedule($id)
 	{
-		$data = array(
-			'listofdone' => $this->Produksi_model->get_production_done(date('d'))
-		);
-		$this->load->view('schedule/produksi_done',$data);
-	}
+		$data = $this->Produksi_model->get_by_id($id);
 
-	function cekkodeproduksipadamesin($kode_produksi)
-	{
-		$cek = $this->Mesin_model->get_operator_mesin($kode_produksi);
-		return $cek;
+		$dm = json_decode($data->machine_use, TRUE);
+
+		$str = '';
+
+		foreach ($dm as $key => $value) {
+			$str .= '<li>'.$this->Mesin_model->get_by_id($value['machine_id'])->nama_mesin.'</li>';
+		}
+
+		$op = $data->priority;
+		$ex = '';
+        if ($op == 0) {
+            
+          $ex = '<label class="badge bg-success">Biasa</label>';
+            
+        }
+
+        if ($op == 1) {
+            
+          $ex = '<label class="badge bg-warning">Urgent</label>';
+            
+        }
+
+        if ($op == 2) {
+            $ex = '<label class="badge bg-danger">Top Urgent</label>';
+        }
+
+		$arr = array(
+			'id' => $data->id,
+			'kd_order' => $data->kd_order,
+			'tanggal_produksi' => $data->tanggal_produksi,
+			'rencana_selesai' => $data->rencana_selesai,
+			'total_barang_jadi' => $data->total_barang_jadi,
+			'priority' => $ex,
+			'machine_use' => $str
+		);
+
+		echo json_encode($arr);
 	}
 }
