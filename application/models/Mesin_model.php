@@ -30,6 +30,12 @@ class Mesin_model extends CI_Model
         return $this->db->get($this->table)->row();
     }
 
+    function get_by_kd_mesin($id)
+    {
+        $this->db->where('kd_mesin', $id);
+        return $this->db->get($this->table)->row();
+    }
+
     function get_operator_mesin($kode_produksi)
     {
         $this->db->where('kd_produksi', $kode_produksi);

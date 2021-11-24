@@ -43,7 +43,7 @@ class Produksi_model extends CI_Model
     function get_all_schedule()
     {
         $year = date('Y');
-        return $this->db->query("SELECT * FROM `produksi` WHERE date(tanggal_produksi) >= '01-01-".$year." 00:00:00'; ")->result();
+        return $this->db->query("SELECT * FROM `produksi` WHERE date(tanggal_produksi) >= '01-01-".$year." 00:00:00' AND status = 'READY'; ")->result();
     }
 
     // get data by id
@@ -65,6 +65,10 @@ class Produksi_model extends CI_Model
         return $this->db->count_all_results();
     }
 
+    function get_by_kd_order($kdorder) {
+        $this->db->where('kd_order', $kdorder);
+        return $this->db->get('produksi')->row();
+    }
 
     // insert data
     function insert($data)
@@ -155,6 +159,13 @@ class Produksi_model extends CI_Model
     {
         return $this->db->query("
             SELECT * FROM `produksi` WHERE tanggal_produksi <= '".$date_end."' AND rencana_selesai >= '".$date_start."'; 
+            ")->result();
+    }
+
+    function find_produksi($machine, $month, $year)
+    {
+        return $this->db->query("
+            SELECT * FROM `produksi` WHERE machine_use LIKE '%".$machine."%' AND month(tanggal_produksi) = '".$month."' AND year(tanggal_produksi) = '".$year."' AND status = 'READY';
             ")->result();
     }
 

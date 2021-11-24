@@ -22,10 +22,31 @@ class Orders_model extends CI_Model
         return $this->db->get($this->table)->result();
     }
 
+    function get_step_for_signer($level_id, $priority)
+    {
+        $this->db->where('order_category',$priority);
+        $this->db->where('level_id', $level_id);
+        return $this->db->get('flow_approved')->row();
+    }
+
+    function get_all_waiting()
+    {
+        $this->db->where('status', 'WAITING');
+        $this->db->like('approved_by','-');
+        return $this->db->get('orders')->result();
+    }
+
     function get_all_tertentu($status)
     {
         $this->db->where('status', $status);
         return $this->db->get($this->table)->result();
+    }
+
+    function get_all_by_thisuser($userid)
+    {
+        $this->db->where('user_id',$userid);
+        $this->db->order_by($this->id, $this->order);
+        return $this->db->get($this->table)->result();   
     }
 
     function get_by_kd_orders($kd_order, $status = null)
@@ -36,6 +57,12 @@ class Orders_model extends CI_Model
         );
 
         $this->db->where($where);
+        return $this->db->get('orders')->row();
+    }
+
+    function get_by_kd_orders_pure($kd_order)
+    {
+        $this->db->where('kd_order', $kd_order);
         return $this->db->get('orders')->row();
     }
 
@@ -101,6 +128,20 @@ class Orders_model extends CI_Model
         return 'O'.date('dmy').$kd;
     }
 
+    function get_all_approval_name_and_step($priority)
+    {
+        $this->db->join('level','level.level_id = flow_approved.level_id');
+        $this->db->where('flow_approved.order_category',$priority);
+        $this->db->order_by('step','ASC');
+        return $this->db->get('flow_approved')->result();
+    }
+
+    function deteksi_already_signed($order_id)
+    {
+        $this->db->where('order_id', $order_id);
+        $this->db->like('approved_by', 'sekarang');
+        return $this->db->get('orders')->result();
+    }
 }
 
 /* End of file Orders_model.php */

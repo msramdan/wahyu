@@ -47,41 +47,12 @@
       <div class="accordion-item border-0">
         <div class="accordion-header" id="headingOne">
           <button class="accordion-button bg-gray-900 text-white px-3 py-10px pointer-cursor" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-calendar">
-            <i class="fa fa-circle fa-fw text-blue me-2 fs-8px"></i> Schedule
+            <i class="fa fa-circle fa-fw text-blue me-2 fs-8px"></i> Work Calendar
           </button>
         </div>
         <div id="collapse-calendar" class="accordion-collapse collapse show" data-bs-parent="#accordion-calendar">
           <div class="accordion-body bg-gray-800 text-white schedule-wrapper">
             <div class="row">
-              <div class="d-none d-lg-block" style="width: 255px">
-
-                <div class="panel panel-inverse">
-                  <div class="panel-heading">
-                    <h4 class="panel-title">Smart Assist</h4>
-                        <div class="panel-heading-btn">
-                    <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
-                    <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
-                        </div>
-                        </div>
-                    <div class="panel-body">
-                        <div class="row">
-                          <div class="col-4" style="text-align: center;"><i class="fab fa-github-alt fa-4x"></i></div>
-                          <div class="col-8">
-                            <h4 id="smart_assist_title" style="font-weight: bold;"><?php echo 'Selamat ' . $salam; ?></h4>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col">
-                            <div id="smart_assist_message">klik pada salah satu jadwal yang ada pada kalendar untuk menampilkan informasi produksi.</div>
-                            <div id="smart_assist_recommendation">
-                                
-                            </div>
-                          </div>
-                        </div>
-                    </div>
-                </div>
-
-              </div>
               <div class="col-lg">
                 <div id="calendar" class="calendar"></div>
               </div>

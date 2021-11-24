@@ -234,7 +234,7 @@
             levelId: levelId,
           },
           success: function() {
-            document.location.href = "<?= base_url('level/role/') ?>" + levelId;
+            
           }
 
         });
@@ -252,7 +252,7 @@
             levelId: levelId,
           },
           success: function() {
-            document.location.href = "<?= base_url('level/role/') ?>" + levelId;
+            
           }
 
         });
@@ -270,7 +270,7 @@
             levelId: levelId,
           },
           success: function() {
-            document.location.href = "<?= base_url('level/role/') ?>" + levelId;
+            
           }
 
         });
@@ -288,7 +288,7 @@
             levelId: levelId,
           },
           success: function() {
-            document.location.href = "<?= base_url('level/role/') ?>" + levelId;
+            
           }
 
         });
@@ -306,7 +306,7 @@
             levelId: levelId,
           },
           success: function() {
-            document.location.href = "<?= base_url('level/role/') ?>" + levelId;
+            
           }
 
         });

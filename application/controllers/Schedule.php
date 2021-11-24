@@ -76,26 +76,23 @@ class Schedule extends CI_Controller {
 		$str = '';
 
 		foreach ($dm as $key => $value) {
-			$str .= '<li>'.$this->Mesin_model->get_by_id($value['machine_id'])->nama_mesin.'</li>';
+			$str .= '<li>'.$this->Mesin_model->get_by_kd_mesin($value['machine_id'])->nama_mesin.'</li>';
 		}
 
 		$op = $data->priority;
 		$ex = '';
-        if ($op == 0) {
-            
-          $ex = '<label class="badge bg-success">Biasa</label>';
-            
-        }
 
-        if ($op == 1) {
-            
-          $ex = '<label class="badge bg-warning">Urgent</label>';
-            
-        }
+    if ($op == 0) {
+      $ex = '<label class="badge bg-success">Biasa</label>';        
+    }
 
-        if ($op == 2) {
-            $ex = '<label class="badge bg-danger">Top Urgent</label>';
-        }
+    if ($op == 1) {
+      $ex = '<label class="badge bg-warning">Urgent</label>';
+    }
+
+    if ($op == 2) {
+        $ex = '<label class="badge bg-danger">Top Urgent</label>';
+    }
 
 		$arr = array(
 			'id' => $data->id,
