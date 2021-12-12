@@ -16,6 +16,7 @@ class Orders extends CI_Controller
         $this->load->model('Produksi_model');
         $this->load->model('Bagian_model');
         $this->load->model('Setting_app_model');
+        $this->load->model('Level_model');
         $this->load->library('form_validation');
     }
 

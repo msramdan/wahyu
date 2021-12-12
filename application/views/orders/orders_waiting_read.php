@@ -792,6 +792,10 @@
 
             var sumproduction = 0;
 
+            var dateawal = moment($('#tanggal_produksi').val() + ' ' + $('.jam-awal').val(), 'YYYY-MM-DD HH:mm')
+
+            var datetemp = moment($('#tanggal_produksi').val() + ' ' + $('.jam-awal').val(), 'YYYY-MM-DD HH:mm')
+
             $('.available-machine').each(function() {
                 var thisel = $(this)
 
@@ -819,7 +823,6 @@
 
             // console.log(arrminutes)
 
-            //nyoba seting durasi ke 0 dah
             var tot = moment.duration(0);
 
             for (i = 0; i < arrminutes.length; i++) {                  
@@ -835,18 +838,43 @@
 
             //JIKA melebihi dari jumlah jam kerja shift 1 dan shift 2, tambah waktu durasinya hingga besok sampe jam masuk kerja (majuin 8 jem)
 
-            var date = moment($('#tanggal_produksi').val() + ' ' + $('.jam-awal').val(), 'YYYY-MM-DD HH:mm')
-            date.add(summinutes, 'minutes')
+            datetemp.add(summinutes, 'minutes')
+
+            //8 jam ga ada kerja
+
             var test = summinutes - 900 //8 jam ga ada kerja
             console.log(test)
             if (test > 0) {
-                date.add(540, 'minutes')
+                datetemp.add(540, 'minutes')
                 console.log('NEXT DAY!')
             }
 
+            var dateakhir = datetemp
+
+            const currentMoment = moment(dateawal, 'YYYY-MM-DD HH:mm')
+            const endMoment = moment(dateakhir, 'YYYY-MM-DD HH:mm')
+            while (currentMoment.isBefore(endMoment, 'day')) {
+                
+                const weekday = currentMoment.format('dddd')
+                const isWeekend = weekday === 'Sunday' || weekday === 'Saturday'
+
+                if(isWeekend) {
+                    console.log(`Loop at ${currentMoment.format('YYYY-MM-DD')} is weekend`);
+                    currentMoment.add(1, 'days')
+                } else {
+                    console.log(`Loop at ${currentMoment.format('YYYY-MM-DD')}`)
+                }
+
+                currentMoment.add(1, 'days')
+            }
+
+            // console.log('dateawal:' + dateawal + '/dateakhir: ' + dateakhir)
+
             //set rencana selesai
-            $('#rencana_selesai').val(moment(date).format('YYYY-MM-DD'))
-            $('.jam-akhir').val(moment(date).format('HH:mm'))
+            $('#rencana_selesai').val(moment(currentMoment).format('YYYY-MM-DD'))
+
+
+            $('.jam-akhir').val(moment(currentMoment).format('HH:mm'))
 
             //set total target barang jadi
             $('.totalproductions').val(sumproduction)

@@ -36,8 +36,23 @@
 
     <tr><td>Status</td><td><?php echo $status; ?></td></tr>
     <tr><td>Reject Note</td><td><?php echo $reject_note; ?></td></tr>
-    <tr><td>Approved By</td><td><?php echo $approved_by; ?></td></tr>
-    <tr><td>Attachment</td><td><?php echo $attachment; ?></td></tr>
+    <tr><td>Approved By</td><td>
+        <ul>
+        <?php 
+        
+        $apv = json_decode($approved_by, TRUE);
+
+        foreach ($apv as $key => $value) {
+            ?>
+            <li><?php echo $classnyak->Level_model->get_by_id($value['level_id'])->nama_level.': ( '.$value['status'].' )' ?></li>
+            <?php
+        }
+
+        ?>        
+
+        </ul>
+    </td></tr>
+    <tr><td>Attachment</td><td><a href="<?php echo base_url().'assets/internal/'.$attachment; ?>" target="_blank" rel="noopener noreferrer"><?php echo $attachment ?></a></td></tr>
     <tr><td></td><td>
         <button type="button" class="btn btn-info list-data"><i class="fas fa-undo"></i> Kembali</button></td></tr>
 </table>
