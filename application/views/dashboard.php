@@ -24,20 +24,28 @@
 </style>
 
 <div id="content" class="app-content">
-    <h1 class="page-header">Halaman Dashboard</h1>
+  <h1 class="page-header">Halaman Dashboard</h1>
+  <div class="container">
+    <div class="row">
+      <div class="col-6">
 
-  <div class="accordion" id="accordion-calendar">
-    <div class="accordion-item border-0">
-      <div class="accordion-header" id="headingOne">
-        <button class="accordion-button bg-gray-900 text-white px-3 py-10px pointer-cursor" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-calendar">
-          <i class="fa fa-circle fa-fw text-blue me-2 fs-8px"></i> Work Calendar
-        </button>
       </div>
-      <div id="collapse-calendar" class="accordion-collapse collapse show" data-bs-parent="#accordion-calendar">
-        <div class="accordion-body bg-gray-800 text-white schedule-wrapper">
-          <div class="row">
-            <div class="col-lg">
-              <div id="calendar" class="calendar"></div>
+      <div class="col-6">
+        <div class="accordion" id="accordion-calendar">
+          <div class="accordion-item border-0">
+            <div class="accordion-header" id="headingOne">
+              <button class="accordion-button bg-gray-900 text-white px-3 py-10px pointer-cursor" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-calendar">
+                <i class="fa fa-circle fa-fw text-blue me-2 fs-8px"></i> Work Calendar
+              </button>
+            </div>
+            <div id="collapse-calendar" class="accordion-collapse collapse show" data-bs-parent="#accordion-calendar">
+              <div class="accordion-body bg-gray-800 text-white schedule-wrapper">
+                <div class="row">
+                  <div class="col-lg">
+                    <div id="calendar" class="calendar"></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
