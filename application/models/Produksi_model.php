@@ -88,6 +88,12 @@ class Produksi_model extends CI_Model
         $this->db->update($this->table, $data);
     }
 
+    function update_by_kd_order($kd_order, $data)
+    {
+        $this->db->where('kd_order', $kd_order);
+        $this->db->update($this->table, $data);
+    }
+
     // delete data
     function delete($id)
     {

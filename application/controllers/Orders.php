@@ -31,13 +31,17 @@ class Orders extends CI_Controller
                 redirect('not_access');
             }
         }
-        
-        $data = array(
-            'sett_apps' =>$this->Setting_app_model->get_by_id(1),
-            'action' => $action,
-            'classnyak' => $this
-        );
-        $this->template->load('template','orders/orders_wrapper', $data);
+
+        if ($action == 'finish_confirm') {
+            $this->confirm_order();
+        } else {
+            $data = array(
+                'sett_apps' =>$this->Setting_app_model->get_by_id(1),
+                'action' => $action,
+                'classnyak' => $this
+            );
+            $this->template->load('template','orders/orders_wrapper', $data);
+        }
     }
 
     public function list()
@@ -91,7 +95,6 @@ class Orders extends CI_Controller
 
                 $machine_used = $this->input->post('machine_use');
                 $estimateddonepergoodsinminute = $this->input->post('troughputperproduct');
-                $goodsallocated = $this->input->post('goodsallocated');
                 $etapermachine = $this->input->post('timespentpermachine');
 
 
@@ -106,7 +109,6 @@ class Orders extends CI_Controller
                         $arraydetail[] = array(
                             'machine_id' => $machine_used[$i],
                             'estimateddonepergoods' => $estimateddonepergoodsinminute[$i],
-                            'goodsallocated' => $goodsallocated[$i],
                             'shift1' => $shift1machine,
                             'shift2' => $shift2machine,
                             'etapermachine' => $etapermachine[$i],
@@ -120,7 +122,7 @@ class Orders extends CI_Controller
                     'created_at' => date('Y-m-d h:m:s'),
                     'kd_order' => $kd_order,
                     'tanggal_produksi' => $this->input->post('tanggal_produksi',TRUE).' '.$this->input->post('jam_awal', TRUE).':00',
-                    'total_barang_jadi' => $this->input->post('totalproductions',TRUE),
+                    'total_barang_jadi' => $this->input->post('qty_order',TRUE),
                     'priority' => $this->input->post('priority',TRUE),
                     'status' => 'WAITING',
                     'rencana_selesai' => $this->input->post('rencana_selesai',TRUE).' '.$this->input->post('jam_akhir', TRUE).':00',
@@ -492,8 +494,8 @@ class Orders extends CI_Controller
             $filenamee = 'prodattach-'.date('ymdhms').'-'.substr(sha1(rand()),0,10);
 
             $config['upload_path']          = './assets/internal'; 
-            $config['allowed_types']        = 'jpg|png|pdf';
-            $config['max_size']             = 10000;
+            $config['allowed_types']        = 'jpg|jpeg|png|pdf|rar';
+            $config['max_size']             = 50000;
             $config['file_name']            = $filenamee;
 
             $_FILES['file']['name'] = $_FILES['attachment']['name'];
@@ -1046,6 +1048,42 @@ class Orders extends CI_Controller
         echo json_encode($dt);
     }
 
+    function get_data_order_pure($kdorder,$kdprod)
+    {
+        $data = $this->Orders_model->get_by_kd_orders_pure($kdorder);
+        $dataprod = $this->Produksi_model->get_by_id($kdprod);
+        
+        $op = $data->priority;
+        $badge = '';
+        if ($op == 1) {
+            $badge = '<label class="badge bg-success">Biasa</label>';
+        }
+        if ($op == 2) {         
+            $badge = '<label class="badge bg-warning">Urgent</label>';
+        }
+        if ($op == 3) {
+            $badge = '<label class="badge bg-danger">Top Urgent</label>';
+         
+        }
+
+        $dt = array(
+            'kdorder' => $kdorder,
+            'tanggal_order' => $data->tanggal_order,
+            'due_date' => $data->due_date,
+            'nama_pemesan' => $data->nama_pemesan,
+            'bagian' => $this->getbagiandata($data->bagian)->nama_bagian,
+            'priority' => $badge,
+            'status' => $data->status,
+            'attachment' => $data->attachment,
+            'barang' => $data->nama_barang,
+            'qty' => $data->qty,
+            'tanggal_produksi' => $dataprod->tanggal_produksi,
+            'rencana_selesai' => $dataprod->rencana_selesai
+        );
+
+        return $dt;
+    }
+
     public function read_data_produksi($kd_order)
     {
 
@@ -1065,6 +1103,165 @@ class Orders extends CI_Controller
         } else {
             echo 'not found';
         }
+    }
+
+
+    public function count_estimate_minutes()
+    {
+        $dateStart = $this->input->post('date_awal', TRUE);
+        $minutesToAdd = $this->input->post('add_minutes', TRUE);
+
+        $getalltanggallibur = $this->db->get('tanggal_libur')->result();
+
+        $arraytanggallibur = [];
+
+        foreach ($getalltanggallibur as $p) {
+            $arraytanggallibur[] = $p->tanggal;
+        }
+        // Fungsi untuk kalkulasi tanggal akhir/selesai
+        function calcEndDate($dateawal, $minutesToAdd) {
+            
+            // Hitung ada berapa hari dari menit yang dimasukkan
+            // dengan cara membagi $minutesToAdd dengn MINUTES_WORK
+            $days = intdiv($minutesToAdd, MINUTES_WORK);
+            
+            // Hitung ada berapa sisa menit di hari itu
+            $minutes = $minutesToAdd % MINUTES_WORK;
+            
+            $dateEnd = new DateTime($dateawal);
+            $dateEnd->modify("+{$days} days");
+            $dateEnd->modify("+{$minutes} minutes");
+
+            return $dateEnd->format('Y-m-d H:i');
+        }
+
+        // Definisikan variabel konstan untuk jam kerja
+        // yaitu 8 jam / 480 menit setiap harinya
+
+        $jam_kerja = $this->Setting_app_model->get_by_id(1)->jam_kerja;
+
+        define('MINUTES_WORK', $jam_kerja);
+        
+        $dateEnd      = calcEndDate($dateStart, $minutesToAdd);
+        
+        // Loop between timestamps, 24 hours at a time
+
+        $ds = new DateTime($dateStart);
+        $de = new DateTime($dateEnd);
+
+        $interval = DateInterval::createFromDateString('1 day');
+        $period = new DatePeriod($ds, $interval, $de);
+
+        foreach ($period as $dt) {
+            $thisDate = $dt->format("Y-m-d");
+            if (in_array($thisDate, $arraytanggallibur)) {
+                // echo 'detected';
+                $de->modify("+1 days");
+            }
+        }
+
+        $arroy = array(
+            'target_selesai' => $de->format('Y-m-d H:i')
+        );
+
+        echo json_encode($arroy, true);
+    }
+
+
+
+
+    // CONFIRM ORDER SECTION
+    public function confirm_order()
+    {
+        is_allowed($this->uri->segment(1),null);
+
+        $data = array(
+            'sett_apps' =>$this->Setting_app_model->get_by_id(1),
+            'kode_order' => '',
+            'classnyak' => $this
+        );
+        $this->template->load('template','orders/orders_confirm_wrapper', $data);
+    }
+
+    public function get_order_toconfirm_data()
+    {
+        $kd_order = $this->input->post('kd_order');
+        $row = $this->Orders_model->get_by_kd_orders_pure($kd_order);
+        $row2 = $this->Produksi_model->get_by_kd_order($kd_order);
+        if ($row->status != 'WAITING') {
+            $data = array(
+                'status' => 'ok',
+                'order_id' => $row->order_id,
+                'nama_pemesan' => $row->nama_pemesan,
+                'bagian' => $row->bagian,
+                'keterangan' => $row->keterangan,
+                'kd_order' => $row->kd_order,
+                'nama_barang' => $row->nama_barang,
+                'tanggal_order' => $row->tanggal_order,
+                'qty' => $row->qty,
+                'due_date' => $row->due_date,
+                'note' => $row->note,
+                'no_kontak' => $row->no_kontak,
+
+                'priority' => $row->priority,
+                'approved_by' => $row->approved_by,
+                'attachment' => $row->attachment,
+                'status' => $row->status,
+                'reject_note' => $row->reject_note,
+
+                'produksi_id' => $row2->id,
+                'tanggal_produksi' => $row2->tanggal_produksi,
+                'rencana_selesai' => $row2->rencana_selesai,
+                'total_barang_jadi' => $row2->total_barang_jadi,
+                'aktual_selesai' => $row2->aktual_selesai,
+                'priority' => $row2->priority,
+                'machine_used' => $row2->machine_use,
+
+                'classnyak' => $this
+            );
+
+            $arr = array(
+                'status' => 'ok',
+                'page' => $this->load->view('orders/orders_confirm_read', $data, TRUE)
+            );
+
+            echo json_encode($arr);
+        } else {
+
+            $arr = array(
+                'status' => 'not found',
+            );
+
+            echo json_encode($arr);
+        }
+    }
+
+    public function order_confirm_action()
+    {
+        $kd_order = $this->input->post('kd_order');
+
+        $tanggal = date('Y-m-d', strtotime($this->input->post('tanggal_actual', TRUE)));
+
+        $jam = $this->input->post('jam_actual', TRUE);
+
+        $dataupdateproduksi = array(
+            'status' => 'DONE',
+            'aktual_selesai' => $tanggal.' '.$jam.':00'
+        );
+
+        $this->Produksi_model->update_by_kd_order($kd_order, $dataupdateproduksi);
+
+        $dataupdateorder = array(
+            'status' => 'DONE'
+        );
+
+        $this->Orders_model->update_by_kd_order($kd_order, $dataupdateorder);
+
+        $arr = array(
+            'status' => 'ok'
+        );
+
+        echo json_encode($arr);
     }
 
 }

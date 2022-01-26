@@ -28,9 +28,6 @@
 		<input type="number" name="materialallocated[]" class="form-control materialallocated readonly" readonly value="0">
 	</td>
 	<td>
-		<input type="text" name="goodsallocated[]" class="form-control goodsallocated" readonly value="0">
-	</td>
-	<td>
 		<div class="input-group">
 			<input type="text" name="timespentpermachine[]" class="form-control-plaintext readonly" readonly>
 		</div>

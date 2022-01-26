@@ -22,12 +22,13 @@ class Setting_app extends CI_Controller
                 'button' => 'Update',
                 'sett_apps' =>$this->Setting_app_model->get_by_id(1), 
                 'action' => site_url('setting_app/update_action'),
-		'id' => set_value('id', $row->id),
-		'nama_aplikasi' => set_value('nama_aplikasi', $row->nama_aplikasi),
-		'company' => set_value('company', $row->company),
-		'alamat' => set_value('alamat', $row->alamat),
-        'author' => set_value('author', $row->author),
-		'favicon' => set_value('favicon', $row->favicon),
+        		'id' => set_value('id', $row->id),
+        		'nama_aplikasi' => set_value('nama_aplikasi', $row->nama_aplikasi),
+        		'company' => set_value('company', $row->company),
+        		'alamat' => set_value('alamat', $row->alamat),
+                'author' => set_value('author', $row->author),
+        		'favicon' => set_value('favicon', $row->favicon),
+                'jam_kerja' => set_value('jam_kerja', $row->jam_kerja),
 	    );
             $this->template->load('template','setting_app/setting_app_form', $data);
         } else {
@@ -64,11 +65,12 @@ class Setting_app extends CI_Controller
             }
 
             $data = array(
-    		'nama_aplikasi' => $this->input->post('nama_aplikasi',TRUE),
-    		'company' => $this->input->post('company',TRUE),
-            'alamat' => $this->input->post('alamat',TRUE),
-    		'author' => $this->input->post('author',TRUE),
-    		'favicon' => $favicon,
+        		'nama_aplikasi' => $this->input->post('nama_aplikasi',TRUE),
+        		'company' => $this->input->post('company',TRUE),
+                'alamat' => $this->input->post('alamat',TRUE),
+        		'author' => $this->input->post('author',TRUE),
+        		'favicon' => $favicon,
+                'jam_kerja' => $this->input->post('jam_kerja',TRUE),
     	    );
 
             $this->Setting_app_model->update($this->input->post('id', TRUE), $data);

@@ -87,12 +87,15 @@
             $cek = $classnyak->detectalreadysigned($orders->order_id);
 
             if ($cek == 0) {
-                ?>
 
-                <button type="button" class="btn btn-primary btn-sm update_data" id="<?php echo encrypt_url($orders->order_id) ?>"><i class="fas fa-pencil-alt" aria-hidden="true"></i></button>
-                <button type="button" class="btn btn-danger btn-sm delete_data" id="<?php echo encrypt_url($orders->order_id) ?>"><i class="fas fa-trash-alt" aria-hidden="true"></i></button>
+                if ($opx == 'REJECTED' || $opx == 'ON PROGRESS') {
+                    ?>
 
-                <?php
+                    <button type="button" class="btn btn-primary btn-sm update_data" id="<?php echo encrypt_url($orders->order_id) ?>"><i class="fas fa-pencil-alt" aria-hidden="true"></i></button>
+                    <button type="button" class="btn btn-danger btn-sm delete_data" id="<?php echo encrypt_url($orders->order_id) ?>"><i class="fas fa-trash-alt" aria-hidden="true"></i></button>
+
+                    <?php
+                }
             }
 
             ?>

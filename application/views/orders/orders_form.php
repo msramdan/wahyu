@@ -127,9 +127,12 @@
 					<label style="font-weight: bold; color: white;" for="attachment" class="form-label mb-15px">
 					    Attachment
 					</label>
-					<img id="frame" src="<?php echo base_url().'assets/internal/'.$attachment ?>" width="100%" height="200px" style="object-fit: cover; display: <?php echo $action == 'form_update_action' ? 'block':'none' ?>;" />
+					<div id="frame-pdf" style="width: 100%; height: 0px;">
+						<canvas id="pdfViewer" style="height: 100%; width: 100%; object-fit: cover;"></canvas>
+					</div>
+					<img id="frame" src="<?php echo base_url().'assets/internal/'.$attachment ?>" style="object-fit: cover; display: <?php echo $action == 'form_update_action' ? 'block':'none' ?>; width: 100%; height: 0px;" />
 					<div class="mb-15px">
-					  <input class="form-control form-control-lg" name="attachment" id="attachment" type="file" onchange="preview(this)"/>
+					  <input class="form-control form-control-lg" name="attachment" id="attachment" type="file" accept=".png,.jpeg,.jpg,.rar,.pdf" onchange="preview(this)"/>
 			    		<input type="hidden" name="attachment_old" id="attachment_old" placeholder="Attachment" value="<?php echo $attachment; ?>" />
 					</div>
 
@@ -148,6 +151,7 @@
 
 <script src="<?php echo base_url() ?>assets/assets/plugins/select2/dist/js/select2.min.js"></script>
 <script src="<?php echo base_url() ?>assets/assets/plugins/jquery.maskedinput/src/jquery.maskedinput.js"></script>
+<script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
 <script type="text/javascript">
 	$('#form_create_action').on('reset', function(e)
 	{
@@ -166,8 +170,67 @@
 	       frame.style.display = "none"
 	       alert("Maksimal lampiran 2 MB")
 	    } else {
-	    	frame.style.display = "block"
-	    	frame.src=URL.createObjectURL(event.target.files[0]);
+
+	    	var ext = s.value.match(/\.([^\.]+)$/)[1];
+			switch (ext) {
+			case 'jpg':
+			case 'jpeg':
+			case 'png':
+				$('#frame').css('height','200px')
+				$('#frame-pdf').css('height','0px')
+			  	frame.style.display = "block"
+	    		frame.src=URL.createObjectURL(event.target.files[0]);
+			  	break;
+			case 'pdf':
+				var file = s.files[0]
+				var pdfjsLib = window['pdfjs-dist/build/pdf'];
+				pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://mozilla.github.io/pdf.js/build/pdf.worker.js';
+				var fileReader = new FileReader();  
+				fileReader.onload = function() {
+					var pdfData = new Uint8Array(this.result);
+					var loadingTask = pdfjsLib.getDocument({data: pdfData});
+					loadingTask.promise.then(function(pdf) {
+					  // console.log('PDF loaded');
+					  var pageNumber = 1;
+					  pdf.getPage(pageNumber).then(function(page) {
+						// console.log('Page loaded');
+						
+						var scale = 1.5;
+						var viewport = page.getViewport({scale: scale});
+
+						// Prepare canvas using PDF page dimensions
+						var canvas = $("#pdfViewer")[0];
+						var context = canvas.getContext('2d');
+						canvas.height = viewport.height;
+						canvas.width = viewport.width;
+
+						// Render PDF page into canvas context
+						var renderContext = {
+						  canvasContext: context,
+						  viewport: viewport
+						};
+						var renderTask = page.render(renderContext);
+						renderTask.promise.then(function () {
+						  // console.log('Page rendered');
+						  $('#frame').css('height','0px')
+						  $('#frame-pdf').css('height','200px')
+						});
+					  });
+					}, function (reason) {
+					  // PDF loading error
+					  console.error(reason);
+					});
+				};
+				fileReader.readAsArrayBuffer(file);
+				break;
+			case 'rar':
+				break;
+			default:
+				$('#frame').css('height','0px')
+				$('#frame-pdf').css('height','0px')
+				alert('Not allowed');
+				this.value = '';
+			}
 	    }
 	}
 

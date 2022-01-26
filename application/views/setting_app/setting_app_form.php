@@ -35,6 +35,15 @@
                         </td>
                     </tr>
 
+                    <tr><td>
+                      Jam Kerja <?php echo form_error('jam_kerja') ?></td><td>
+                        <div class="input-group" style="max-width: 200px;">
+                        <input type="number" class="form-control" name="jam_kerja" id="jam_kerja" placeholder="jam_kerja" value="<?php echo $jam_kerja; ?>" />
+                        <div class="input-group-prepend">
+                          <div class="input-group-text">Menit</div>
+                        </div>
+                        </div>
+                    </td></tr>
                     
 
 
