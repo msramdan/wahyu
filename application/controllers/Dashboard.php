@@ -29,10 +29,10 @@ class Dashboard extends CI_Controller {
 		return $this->db->query("SELECT COUNT(user_id) AS 'tl' FROM `history_login` WHERE day(tanggal) = ".$day.";")->row();
 	}
 
-	function showactivemachine()
-	{
-		return $this->db->query("SELECT COUNT(user_id) AS 'tl' FROM `history_login` WHERE day(tanggal) = ".$day.";")->row();
-	}
+	// function showactivemachine()
+	// {
+	// 	return $this->db->query("SELECT COUNT(user_id) AS 'tl' FROM `history_login` WHERE day(tanggal) = ".$day.";")->row();
+	// }
 
 	function showtotalmaterial()
 	{
@@ -82,8 +82,6 @@ class Dashboard extends CI_Controller {
 				$color = '#ff3502';
 			}
 
-			$dick = 'DEEEEEEEECK!';
-
 			$stringobject.=
 				'{
 					title: "'. $value->id.'",
@@ -114,19 +112,50 @@ class Dashboard extends CI_Controller {
 		}
 
 		$op = $data->priority;
+
+		$sts = $data->status;
 		$ex = '';
+		$st = '';
 
-    if ($op == 0) {
-      $ex = '<label class="badge bg-success">Biasa</label>';        
-    }
+		if ($op == 0) {
+		$ex = '<label class="badge bg-success">Biasa</label>';        
+		}
 
-    if ($op == 1) {
-      $ex = '<label class="badge bg-warning">Urgent</label>';
-    }
+		if ($op == 1) {
+		$ex = '<label class="badge bg-warning">Urgent</label>';
+		}
 
-    if ($op == 2) {
-        $ex = '<label class="badge bg-danger">Top Urgent</label>';
-    }
+		if ($op == 2) {
+			$ex = '<label class="badge bg-danger">Top Urgent</label>';
+		}
+
+		if ($op == 0) {
+		$ex = '<label class="badge bg-success">Biasa</label>';        
+		}
+
+		if ($op == 1) {
+		$ex = '<label class="badge bg-warning">Urgent</label>';
+		}
+
+		if ($op == 2) {
+			$ex = '<label class="badge bg-danger">Top Urgent</label>';
+		}
+
+		if ($sts == 'WAITING'){
+			$st = '<label class="badge bg-warning">Dalam Review</label>';
+		}
+
+		if ($sts == 'DONE') {
+			$st = '<label class="badge bg-success">Selesai</label>';
+		}
+
+		if ($sts == 'ON PROGRESS') {
+			$st = '<label class="badge bg-info">Diproses</label>';
+		}
+
+		if ($sts == 'REJECTED') {
+			$st = '<label class="badge bg-danger">Perlu Revisi</label>';
+		}
 
 		$arr = array(
 			'id' => $data->id,
@@ -135,6 +164,7 @@ class Dashboard extends CI_Controller {
 			'rencana_selesai' => $data->rencana_selesai,
 			'total_barang_jadi' => $data->total_barang_jadi,
 			'priority' => $ex,
+			'status' => $st,
 			'machine_use' => $str
 		);
 

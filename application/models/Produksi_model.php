@@ -43,7 +43,7 @@ class Produksi_model extends CI_Model
     function get_all_schedule()
     {
         $year = date('Y');
-        return $this->db->query("SELECT * FROM `produksi` WHERE date(tanggal_produksi) >= '01-01-".$year." 00:00:00' AND status = 'READY'; ")->result();
+        return $this->db->query("SELECT * FROM `produksi` WHERE date(tanggal_produksi) >= '01-01-".$year." 00:00:00';")->result();
     }
 
     // get data by id
@@ -56,12 +56,12 @@ class Produksi_model extends CI_Model
     // get total rows
     function total_rows($q = NULL) {
         $this->db->like('', $q);
-	$this->db->or_like('id', $q);
-	$this->db->or_like('tanggal_produksi', $q);
-	$this->db->or_like('total_barang_jadi', $q);
-	$this->db->or_like('id_detail_material', $q);
-	$this->db->or_like('user_id', $q);
-	$this->db->from($this->table);
+        $this->db->or_like('id', $q);
+        $this->db->or_like('tanggal_produksi', $q);
+        $this->db->or_like('total_barang_jadi', $q);
+        $this->db->or_like('id_detail_material', $q);
+        $this->db->or_like('user_id', $q);
+        $this->db->from($this->table);
         return $this->db->count_all_results();
     }
 
@@ -175,6 +175,12 @@ class Produksi_model extends CI_Model
             ")->result();
     }
 
+    function get_productions_by_machine($machine_id)
+    {
+        return $this->db->query("
+            SELECT * FROM `produksi` WHERE machine_use LIKE '%\"machine_id\":\"".$machine_id."\"%' AND status = 'WAITING';
+            ")->result();
+    }
 }
 
 /* End of file Produksi_model.php */

@@ -29,7 +29,7 @@
 							height: 50vh;
 							justify-content: center;">
 					        <div class="icon"><i class="fa fa-search" style="font-size: 65px"></i></div>
-					        <h3 class="title" style="color: #9d9d9d;s">Data Order akan muncul disini</h3>
+					        <h3 class="title" style="color: #9d9d9d;">Data Order akan muncul disini</h3>
 					        <p>Kesulitan menginput kode order? coba cari di <a class="btn btn-warning btn-xs" href="<?php echo base_url().'Orders' ?>">Daftar Order</a></p>        
 					    </div>
 					</div>
